@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				template="/resources/decorator/#{sapInfo.decorator}/decorator.xhtml">
+	
+	<ui:define name="title"><h:outputText value="#{msgs['index.title']}" /></ui:define>
+	
+	<ui:define name="contents">
+		<h2><h:outputText value="#{msgs['index.welcome']}" /></h2>
+		<h2><h:outputText value="#{msgs['index.welcome.professor']} #{sessionController.currentProfessor.name}" /></h2><br />
+		
+		<p>
+			<h:outputText value="#{msgs['index.description.professor.line01']}" />
+		   	<h:outputText value="#{msgs['index.description.line02']}" />
+		   	<h:outputText value="#{msgs['index.description.line03']}" />
+		</p>
+
+		<div class="cleaner_h20" />
+
+		<ul class="list_01">
+			<li>
+				<a href="#{facesContext.externalContext.requestContextPath}/assignments/manageSchoolRooms/list.faces">
+				<h:outputText value="#{msgs['index.professor.list.item01']}" /></a>
+			</li>
+			<li>
+				<a href="#{facesContext.externalContext.requestContextPath}/assignments/manageDisciplines/list.faces">
+				<h:outputText value="#{msgs['index.professor.list.item02']}" /></a>
+			</li>
+			<li>
+				<a href="#{facesContext.externalContext.requestContextPath}/assignments/manageStudents/list.faces">
+				<h:outputText value="#{msgs['index.professor.list.item03']}" /></a>
+			</li>
+			<li>
+				<a href="#{facesContext.externalContext.requestContextPath}/assignments/manageAssignments/list.faces">
+				<h:outputText value="#{msgs['index.professor.list.item04']}" /></a>
+			</li>
+			<li>
+				<a href="#{facesContext.externalContext.requestContextPath}/labs/manageSupervisions/list.faces">
+				<h:outputText value="#{msgs['index.professor.list.item05']}" /></a>
+			</li>
+			<li><h:outputText value="#{msgs['index.professor.list.item06']}" /></li>
+		</ul>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,154 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/resources/decorator/#{sapInfo.decorator}/decorator.xhtml">
+
+    <ui:define name="title"><h:outputText value="#{msgs['manageAssignmentGroups.title']}" /></ui:define>
+
+    <ui:define name="contents">
+        <h1><h:outputText value="#{msgs['manageAssignmentGroups.title']}" /></h1><br />
+		
+        <div class="crud">
+            <!-- Filter bar: used to filter the listing (displayed when there is at least one filter available). -->
+            <h:form id="filterForm">
+                <h:panelGroup id="filterBar" rendered="#{(not empty manageAssignmentGroupsController.filters)}">
+                    <div class="crudFilterBar">
+                        <h:outputText value="#{msgs['crud.text.filter']} " />
+                        
+                        <p:selectOneMenu id="filter" required="true" value="#{manageAssignmentGroupsController.filterKey}">
+                            <f:selectItems 	value="#{manageAssignmentGroupsController.filters}" var="filter" 
+                            				itemLabel="#{filter.label}" itemValue="#{filter.key}" />
+                            <f:ajax event="change" execute="@form" listener="#{manageAssignmentGroupsController.changeFilter}" 
+                            		render="@form :listingForm :buttonsForm" />
+                        </p:selectOneMenu>
+                        
+                        <h:outputText value=": " />
+                        
+                        <p:inputText 	id="filterText" size="20" required="false" 
+                        				value="#{manageAssignmentGroupsController.filterParam}" 
+                        				rendered="#{manageAssignmentGroupsController.filter.options == null}" />
+                        
+                        <p:selectOneMenu 	id="filterSelect" required="false" 
+                        					value="#{manageAssignmentGroupsController.filterParam}" 
+                        					rendered="#{manageAssignmentGroupsController.filter.options != null}">
+                            <f:selectItems 	value="#{manageAssignmentGroupsController.filter.reversedOptionsLabels}" />
+                        </p:selectOneMenu>
+                        
+                        <p:commandLink 	action="#{manageAssignmentGroupsController.filter}" 
+                        				process="@form" update=":listingForm :buttonsForm">
+                            <h:graphicImage style="border: 0;" value="/resources/icons/button-find.png" 
+                            				title="#{msgs['crud.button.filter']}" />
+                        </p:commandLink>
+                    </div>
+                </h:panelGroup>
+            </h:form>
+
+            <!-- The listing form. -->
+            <h:form id="listingForm">
+                <!-- Filter information (displayed when the listing is being filtered. -->
+                <h:panelGroup id="filterInfo" rendered="#{manageAssignmentGroupsController.filtering}">
+                    <div class="crudFilterInfo">
+                        <h:outputFormat value="#{msgs['crud.text.filterInfo']} ">
+                            <f:param value="#{manageAssignmentGroupsController.filter.label}" />
+                            <f:param value="#{manageAssignmentGroupsController.filterLabel}" />
+                        </h:outputFormat>
+                        
+                        <p:commandLink 	action="#{manageAssignmentGroupsController.cancelFilter}" 
+                        				process="@form" update="@form :buttonsForm">
+                            <h:graphicImage style="border: 0;" value="/resources/icons/button-close.png" 
+                            				title="#{msgs['crud.button.cancelFilter']}" />
+                        </p:commandLink>
+                    </div>
+                </h:panelGroup>
+
+                <!-- The list of entities. -->
+                <h:panelGroup id="listing" styleClass="listing">
+                    <p:dataTable
+                        widgetVar="listingTable"
+                        value="#{manageAssignmentGroupsController.lazyEntities}" 
+                        var="entity" 
+                        rows="#{manageAssignmentGroupsController.maxDataTableRowsPerPage}" 
+                        rowsPerPageTemplate=	"#{manageAssignmentGroupsController.halfMaxDataTableRowsPerPage},
+                        						#{manageAssignmentGroupsController.maxDataTableRowsPerPage},
+                        						#{manageAssignmentGroupsController.doubleMaxDataTableRowsPerPage}"
+                        lazy="true" 
+                        paginator="true" 
+                        selection="#{manageAssignmentGroupsController.selectedEntity}" 
+                        selectionMode="single" 
+                        paginatorTemplate=	"{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+                        					{CurrentPageReport} {NextPageLink} {LastPageLink}" 
+                        paginatorPosition="bottom" 
+                        loadingMessage="#{msgs['text.ajax.loading']}" 
+                        emptyMessage=	"#{manageAssignmentGroupsController.filtering ? 
+                        				msgs['manageAssignmentGroups.text.noEntitiesFiltered'] : 
+                        				msgs['manageAssignmentGroups.text.noEntities']}">
+                        				
+                        <p:column headerText="#{msgs['manageAssignmentGroups.form.period']}" style="text-align: center;">
+                            <h:outputText value="#{entity.assignment.schoolRoom.period}"/>
+                        </p:column>
+                        				
+                        <p:column headerText="#{msgs['manageAssignmentGroups.form.schoolRoom']}" style="text-align: center;">
+                            <h:outputText value="#{entity.assignment.schoolRoom}"/>
+                        </p:column>
+
+						<p:column headerText="#{msgs['manageAssignmentGroups.form.assignment']}" style="text-align: center;">
+                            <h:outputText value="#{entity.assignment}"/>
+                        </p:column>
+                        
+                        <p:column headerText="#{msgs['manageAssignmentGroups.form.number']}" style="text-align: center;">
+                            <h:outputText value="#{entity.number}"/>
+                        </p:column>                   						
+
+                        <p:ajax event="rowSelect" update=":buttonsForm" />
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:form>
+
+            <!-- Buttons shown below the listing. -->
+            <h:form id="buttonsForm">
+                <div class="crudButtons">
+                    <p:commandButton 	action="#{manageAssignmentGroupsController.create}" 
+                    					icon="ui-icon-document" value="#{msgs['crud.button.create']}" />
+                    
+                    <p:commandButton 	action="#{manageAssignmentGroupsController.retrieve}" value="#{msgs['crud.button.retrieve']}" 
+					                    icon="ui-icon-note" disabled="#{manageAssignmentGroupsController.selectedEntity == null}" />
+                    
+                    <p:commandButton 	action="#{manageAssignmentGroupsController.update}" value="#{msgs['crud.button.update']}" 
+                    					icon="ui-icon-pencil" disabled="#{manageAssignmentGroupsController.selectedEntity == null}" />
+                    
+                    <p:commandButton 	action="#{manageAssignmentGroupsController.trash}" value="#{msgs['crud.button.delete']}" 
+					                    icon="ui-icon-trash" disabled="#{manageAssignmentGroupsController.selectedEntity == null}" 
+					                    process="@this" update=":trashForm" />
+                </div>
+            </h:form><br />
+
+            <!-- The trash panel: shows entities that have been selected for deletion. -->
+            <h:form id="trashForm">
+                <p:panel 	id="trashPanel" styleClass="trashPanel" header="#{msgs['crud.text.trashHeader']}" 
+                			toggleable="true" rendered="#{not empty manageAssignmentGroupsController.trashCan}">
+                    <p:dataList value="#{manageAssignmentGroupsController.trashCan}" var="entity" type="unordered">
+                        #{entity.number} - #{entity.assignment} 
+                    </p:dataList>
+                    
+                    <div class="nemoUtilsFormInternalButton">
+                        <p:commandButton 	action="#{manageAssignmentGroupsController.cancelDeletion}" 
+                        					value="#{msgs['crud.button.cancelDeletion']}" icon="ui-icon-closethick" 
+                        					update=":trashForm :buttonsForm :listingForm :globalMessages" />
+                        
+                        <p:commandButton 	action="#{manageAssignmentGroupsController.delete}" 
+                        					value="#{msgs['crud.button.confirmDeletion']}" icon="ui-icon-check" 
+                        					update=":trashForm :buttonsForm :listingForm" />
+                    </div>
+                </p:panel><br />
+                
+                <div align="center">
+                	<p:commandButton 	action="#{sessionController.returnToIndexPage}" 
+                						value="#{msgs['crud.button.backHome']}" icon="ui-icon-home" />
+                </div>                
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

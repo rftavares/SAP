@@ -1,0 +1,161 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/resources/decorator/#{sapInfo.decorator}/decorator.xhtml">
+
+    <ui:define name="title">
+        <h:outputText 	value="#{msgs['manageSupervisions.title.create']}" 
+        				rendered="#{(! manageSupervisionsController.readOnly) and 
+        				(manageSupervisionsController.selectedEntity.id == null)}" />
+        
+        <h:outputText 	value="#{msgs['manageSupervisions.title.update']}" 
+        				rendered="#{(! manageSupervisionsController.readOnly) and 
+        				(manageSupervisionsController.selectedEntity.id != null)}" />
+        
+        <h:outputText	value="#{msgs['manageSupervisions.title.retrieve']}" 
+        				rendered="#{manageSupervisionsController.readOnly}" />
+    </ui:define>
+
+    <ui:define name="contents">
+        <h1>
+            <h:outputText 	value="#{msgs['manageSupervisions.title.create']}" 
+            				rendered="#{(! manageSupervisionsController.readOnly) and 
+            				(manageSupervisionsController.selectedEntity.id == null)}" />
+            
+            <h:outputText 	value="#{msgs['manageSupervisions.title.update']}" 
+            				rendered="#{(! manageSupervisionsController.readOnly) and 
+            				(manageSupervisionsController.selectedEntity.id != null)}" />
+            
+            <h:outputText 	value="#{msgs['manageSupervisions.title.retrieve']}" 
+            				rendered="#{manageSupervisionsController.readOnly}" />
+        </h1><br />
+
+        <div class="crud">
+            <ui:decorate template="/resources/form.xhtml">
+                <h:form id="form">
+                	<p:panel id="panel" header="#{msgs['crud.text.informationData']}"><br />
+	                	<p:focus context="panel"/>
+	                	
+	                	<h:panelGroup id="studentField">
+							<ui:decorate template="/resources/formfield.xhtml">
+								<ui:param name="fieldName" value="form:student" />
+								<ui:define name="label">
+									<h:outputText value="#{msgs['manageSupervisions.form.name']}" />
+								</ui:define>
+								<p:selectOneMenu 	id="student" value="#{manageSupervisionsController.selectedEntity.student}"
+													converter="#{assignmentController.studentConverter}" required="true"
+													disabled="#{manageSupervisionsController.readOnly}">
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems 	value ="#{manageStudentsController.students}" var="student" 
+													itemLabel="#{student.enrollment} - #{student.toString()}" 
+													itemValue ="#{student}"/>									
+								</p:selectOneMenu>		
+							</ui:decorate>
+						</h:panelGroup><br />
+	                	
+	                    <h:panelGroup id="themeField">
+	                        <ui:decorate template="/resources/formfield.xhtml">
+	                            <ui:param name="fieldName" value="form:theme" />
+	                            <ui:param name="tooltip" value="#{msgs['manageSupervisions.form.theme.tooltip']}" />
+	                            <ui:define name="label"><h:outputText value="#{msgs['manageSupervisions.form.theme']}" /></ui:define>
+	                            <p:inputText 	id="theme" required="true" size="76" maxlength="60"
+	                            				value="#{manageSupervisionsController.selectedEntity.theme}"  
+	                            				disabled="#{manageSupervisionsController.readOnly}">	                                
+	                            </p:inputText>
+	                        </ui:decorate>
+	                    </h:panelGroup><br />                    
+	                    
+	                    <h:panelGroup id="typeField">
+	                        <ui:decorate template="/resources/formfield.xhtml">
+	                            <ui:param name="fieldName" value="form:type" />
+	                            <ui:param name="tooltip" value="#{msgs['manageSupervisions.form.type.tooltip']}" />
+	                            <ui:define name="label"><h:outputText value="#{msgs['manageSupervisions.form.type']}" /></ui:define>
+	                            <p:selectOneMenu 	id="type" value="#{manageSupervisionsController.selectedEntity.type}" 
+	                            					required="true" disabled="#{manageSupervisionsController.readOnly}">
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems 	value="#{manageSupervisionsController.supervisionTypes}" var="supervisionType"
+													itemLabel="#{msgs['enum.SupervisionType.text.' += supervisionType]}" 
+													itemValue="#{supervisionType}" />
+								</p:selectOneMenu>
+	                        </ui:decorate>
+	                    </h:panelGroup><br />
+	                    
+	                    <h:panelGroup id="advisorField">
+							<ui:decorate template="/resources/formfield.xhtml">
+								<ui:param name="fieldName" value="form:advisor" />
+								<ui:define name="label">
+									<h:outputText value="#{msgs['manageSupervisions.form.advisor']}" />
+								</ui:define>
+								<p:selectOneMenu 	id="advisor" value="#{manageSupervisionsController.selectedEntity.advisor}"
+													converter="#{assignmentController.professorConverter}" required="true"													
+													disabled="#{manageSupervisionsController.readOnly}">
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems 	value ="#{manageProfessorsController.professors}" var="professor" 
+													itemLabel="#{professor.toString()}" itemValue ="#{professor}"/>									
+								</p:selectOneMenu>		
+							</ui:decorate>
+						</h:panelGroup><br />
+						
+						<h:panelGroup id="coadvisorField">
+							<ui:decorate template="/resources/formfield.xhtml">
+								<ui:param name="fieldName" value="form:coadvisor" />
+								<ui:define name="label">
+									<h:outputText value="#{msgs['manageSupervisions.form.coadvisor']}" />
+								</ui:define>
+								<p:selectOneMenu 	id="coadvisor" value="#{manageSupervisionsController.selectedEntity.coadvisor}"
+													converter="#{assignmentController.professorConverter}"
+													disabled="#{manageSupervisionsController.readOnly}">
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems 	value ="#{manageProfessorsController.professors}" var="professor" 
+													itemLabel="#{professor.toString()}" itemValue ="#{professor}"/>									
+								</p:selectOneMenu>		
+							</ui:decorate>
+						</h:panelGroup><br />
+	                    
+	                    <h:panelGroup id="startDateField">
+	                        <ui:decorate template="/resources/formfield.xhtml">
+	                            <ui:param name="fieldName" value="form:startDate" />
+	                            <ui:param name="tooltip" value="#{msgs['manageSupervisions.form.startDate.tooltip']}" />
+	                            <ui:define name="label"><h:outputText value="#{msgs['manageSupervisions.form.startDate']}" /></ui:define>
+	                            <p:calendar 	id="startDate" value="#{manageSupervisionsController.selectedEntity.startDate}" 
+	                            				size="6" mask="true" pattern="dd/MM/yyyy" required="true" 
+	                            				disabled="#{manageSupervisionsController.readOnly}">
+	                            </p:calendar>
+	                        </ui:decorate>
+	                    </h:panelGroup><br />                    
+	                    
+	                    <h:panelGroup id="endDateField">
+	                        <ui:decorate template="/resources/formfield.xhtml">
+	                            <ui:param name="fieldName" value="form:endDate" />
+	                            <ui:param name="tooltip" value="#{msgs['manageSupervisions.form.endDate.tooltip']}" />
+	                            <ui:define name="label"><h:outputText value="#{msgs['manageSupervisions.form.endDate']}" /></ui:define>
+	                            <p:calendar 	id="endDate" value="#{manageSupervisionsController.selectedEntity.endDate}" 
+	                            				size="6" mask="true" pattern="dd/MM/yyyy" required="true" 
+	                            				disabled="#{manageSupervisionsController.readOnly}">
+	                            </p:calendar>
+	                        </ui:decorate>
+	                    </h:panelGroup><br />                    
+	                    
+	                    <ui:decorate template="/resources/formbutton.xhtml">
+	                        <h:panelGroup rendered="#{! manageSupervisionsController.readOnly}">
+	                        	<p:commandButton 	action="#{manageSupervisionsController.save}" value="#{msgs['crud.button.save']}" 
+	                            					update="@all" icon="ui-icon-disk" />
+	                        
+	                            <p:commandButton 	action="#{manageSupervisionsController.list}" value="#{msgs['crud.button.cancel']}" 
+	                            					immediate="true" icon="ui-icon-closethick" />
+	                        </h:panelGroup>
+	                        
+	                        <h:panelGroup rendered="#{manageSupervisionsController.readOnly}">
+	                            <p:commandButton 	action="#{manageSupervisionsController.list}" value="#{msgs['crud.button.back']}" 
+	                            					immediate="true" icon="ui-icon-arrowreturnthick-1-w" />
+	                        </h:panelGroup>
+	                    </ui:decorate><br />
+	            	</p:panel>
+                </h:form>
+            </ui:decorate>
+        </div>
+    </ui:define>
+</ui:composition>

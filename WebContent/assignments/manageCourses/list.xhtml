@@ -1,0 +1,145 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/resources/decorator/#{sapInfo.decorator}/decorator.xhtml">
+
+    <ui:define name="title"><h:outputText value="#{msgs['manageCourses.title']}" /></ui:define>
+
+    <ui:define name="contents">
+        <h1><h:outputText value="#{msgs['manageCourses.title']}" /></h1><br />
+		
+        <div class="crud">
+            <!-- Filter bar: used to filter the listing (displayed when there is at least one filter available). -->
+            <h:form id="filterForm">
+                <h:panelGroup id="filterBar" rendered="#{(not empty manageCoursesController.filters)}">
+                    <div class="crudFilterBar">	
+                        <h:outputText value="#{msgs['crud.text.filter']} " />
+                        
+                        <p:selectOneMenu id="filter" required="true" value="#{manageCoursesController.filterKey}">
+                            <f:selectItems 	value="#{manageCoursesController.filters}" var="filter" 
+                            				itemLabel="#{filter.label}" itemValue="#{filter.key}" />
+                            <f:ajax event="change" execute="@form" listener="#{manageCoursesController.changeFilter}" 
+                            		render="@form :listingForm :buttonsForm" />
+                        </p:selectOneMenu>
+                        
+                        <h:outputText value=": " />
+                        
+                        <p:inputText 	id="filterText" size="20" required="false" 
+                        				value="#{manageCoursesController.filterParam}" 
+                        				rendered="#{manageCoursesController.filter.options == null}" />
+                       
+                        <p:selectOneMenu 	id="filterSelect" required="false" value="#{manageCoursesController.filterParam}" 
+                        					rendered="#{manageCoursesController.filter.options != null}">
+                            <f:selectItems value="#{manageCoursesController.filter.reversedOptionsLabels}" />
+                        </p:selectOneMenu>
+                        
+                        <p:commandLink 	action="#{manageCoursesController.filter}" 
+                        				process="@form" update=":listingForm :buttonsForm">
+                            <h:graphicImage style="border: 0;" value="/resources/icons/button-find.png" 
+                            				title="#{msgs['crud.button.filter']}" />
+                        </p:commandLink>                        
+                    </div>
+                </h:panelGroup>
+            </h:form>
+
+            <!-- The listing form. -->
+            <h:form id="listingForm">
+                <!-- Filter information (displayed when the listing is being filtered. -->
+                <h:panelGroup id="filterInfo" rendered="#{manageCoursesController.filtering}">
+                    <div class="crudFilterInfo">
+                        <h:outputFormat value="#{msgs['crud.text.filterInfo']} ">
+                            <f:param value="#{manageCoursesController.filter.label}" />
+                            <f:param value="#{manageCoursesController.filterLabel}" />
+                        </h:outputFormat>
+                        
+                        <p:commandLink 	action="#{manageCoursesController.cancelFilter}" 
+                        				process="@form" update="@form :buttonsForm">
+                            <h:graphicImage style="border: 0;" value="/resources/icons/button-close.png" 
+                            				title="#{msgs['crud.button.cancelFilter']}" />
+                        </p:commandLink>                        
+                    </div>
+                </h:panelGroup>
+
+                <!-- The list of entities. -->
+                <h:panelGroup id="listing" styleClass="listing">
+                    <p:dataTable
+                        widgetVar="listingTable"
+                        value="#{manageCoursesController.lazyEntities}" 
+                        var="entity" 
+                        rows="#{manageCoursesController.maxDataTableRowsPerPage}" 
+                        rowsPerPageTemplate=	"#{manageCoursesController.halfMaxDataTableRowsPerPage},
+                        						#{manageCoursesController.maxDataTableRowsPerPage},
+                        						#{manageCoursesController.doubleMaxDataTableRowsPerPage}"
+                        lazy="true" 
+                        paginator="true" 
+                        selection="#{manageCoursesController.selectedEntity}" 
+                        selectionMode="single" 
+                        paginatorTemplate=	"{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+                        					{CurrentPageReport} {NextPageLink} {LastPageLink}" 
+                        paginatorPosition="bottom" 
+                        loadingMessage="#{msgs['text.ajax.loading']}"
+                        emptyMessage=	"#{manageCoursesController.filtering ? 
+                        				msgs['manageCourses.text.noEntitiesFiltered'] : 
+                        				msgs['manageCourses.text.noEntities']}">
+
+						<p:column headerText="#{msgs['manageCourses.form.code']}" style="text-align: center;">
+                            <h:outputText value="#{entity.code}"/>
+                        </p:column>
+                        
+                        <p:column headerText="#{msgs['manageCourses.form.name']}" style="text-align: center;">
+                            <h:outputText value="#{entity.name}" />
+                        </p:column>						
+
+                        <p:ajax event="rowSelect" update=":buttonsForm" />
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:form>
+
+            <!-- Buttons shown below the listing. -->
+            <h:form id="buttonsForm">
+                <div class="crudButtons">
+                    <p:commandButton 	action="#{manageCoursesController.create}" 
+                    					icon="ui-icon-document" value="#{msgs['crud.button.create']}" />
+                    
+                    <p:commandButton 	action="#{manageCoursesController.retrieve}" value="#{msgs['crud.button.retrieve']}" 
+					                    icon="ui-icon-note" disabled="#{manageCoursesController.selectedEntity == null}" />
+                    
+                    <p:commandButton 	action="#{manageCoursesController.update}" value="#{msgs['crud.button.update']}" 
+										icon="ui-icon-pencil" disabled="#{manageCoursesController.selectedEntity == null}" />
+                    
+                    <p:commandButton 	action="#{manageCoursesController.trash}" value="#{msgs['crud.button.delete']}" 
+					                    icon="ui-icon-trash" disabled="#{manageCoursesController.selectedEntity == null}" 
+					                    process="@this" update=":trashForm" />                    
+                </div>
+            </h:form><br />
+
+            <!-- The trash panel: shows entities that have been selected for deletion. -->
+            <h:form id="trashForm">
+                <p:panel 	id="trashPanel" styleClass="trashPanel" header="#{msgs['crud.text.trashHeader']}" 
+                			toggleable="true" rendered="#{not empty manageCoursesController.trashCan}">
+                    <p:dataList value="#{manageCoursesController.trashCan}" var="entity" type="unordered">
+                        #{entity.code} - #{entity.name} 
+                    </p:dataList>
+                    
+                    <div class="nemoUtilsFormInternalButton">
+                    	<p:commandButton 	action="#{manageCoursesController.delete}" 
+                        					value="#{msgs['crud.button.confirmDeletion']}" icon="ui-icon-check" 
+                        					update=":trashForm :buttonsForm :listingForm :globalMessages" />
+                    
+                        <p:commandButton 	action="#{manageCoursesController.cancelDeletion}" 
+                        					value="#{msgs['crud.button.cancelDeletion']}" icon="ui-icon-closethick" 
+                        					update=":trashForm :buttonsForm :listingForm" />                      
+                    </div>
+                </p:panel><br />
+                
+                <div align="center">
+                	<p:commandButton 	action="#{sessionController.returnToIndexPage}" 
+                						value="#{msgs['crud.button.backHome']}" icon="ui-icon-home" />
+                </div>                
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,190 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/resources/decorator/#{sapInfo.decorator}/decorator.xhtml">
+
+    <ui:define name="title">
+        <h:outputText 	value="#{msgs['manageAssignments.title.create']}" 
+       					rendered="#{(! manageAssignmentsController.readOnly) and 
+       				 	(manageAssignmentsController.selectedEntity.id == null)}" />
+        
+        <h:outputText 	value="#{msgs['manageAssignments.title.update']}" 
+				        rendered="#{(! manageAssignmentsController.readOnly) and 
+				        (manageAssignmentsController.selectedEntity.id != null)}" />
+        
+        <h:outputText 	value="#{msgs['manageAssignments.title.retrieve']}" 
+        				rendered="#{manageAssignmentsController.readOnly}" />
+    </ui:define>
+    
+    <ui:define name="contents">
+        <h1>
+            <h:outputText 	value="#{msgs['manageAssignments.title.create']}" 
+				            rendered="#{(! manageAssignmentsController.readOnly) and 
+				            (manageAssignmentsController.selectedEntity.id == null)}" />
+            
+            <h:outputText 	value="#{msgs['manageAssignments.title.update']}" 
+				            rendered="#{(! manageAssignmentsController.readOnly) and 
+				            (manageAssignmentsController.selectedEntity.id != null)}" />
+            
+            <h:outputText 	value="#{msgs['manageAssignments.title.retrieve']}" 
+            				rendered="#{manageAssignmentsController.readOnly}" />
+        </h1><br />
+
+        <div class="crud">
+            <ui:decorate template="/resources/form.xhtml">
+                <h:form id="form">
+                	<p:panel id="panel" header="#{msgs['crud.text.informationData']}"><br />
+	                	<p:focus context="panel"/>
+	                	
+	                	<h:panelGroup id="periodField">
+							<ui:decorate template="/resources/formfield.xhtml">
+								<ui:param name="fieldName" value="form:period" />
+								<ui:define name="label">
+									<h:outputText value="#{msgs['manageAssignments.form.period']}" />
+								</ui:define>
+								<p:selectOneMenu 	id="period" required="true"
+													value="#{manageAssignmentsController.periodField}" 
+													converter="#{assignmentController.periodConverter}" 
+													disabled="#{(manageAssignmentsController.readOnly) or
+				            									(manageAssignmentsController.selectedEntity.id != null)}">
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems 	value ="#{managePeriodsController.periods}" var="period" 
+													itemLabel="#{period.toString()}" itemValue ="#{period}"/>
+									<p:ajax event="change" update="schoolRoomField"
+											listener="#{manageAssignmentsController.loadSchoolRooms}"  />										
+								</p:selectOneMenu>		
+							</ui:decorate>
+						</h:panelGroup><br />
+	                	
+	                   	<h:panelGroup id="schoolRoomField">
+	                        <ui:decorate template="/resources/formfield.xhtml">
+	                            <ui:param name="fieldName" value="form:schoolRoom" />                            
+	                            <ui:define name="label">
+	                            	<h:outputText value="#{msgs['manageAssignments.form.schoolRoom']}" />
+	                            </ui:define>                            
+	                            <p:selectOneMenu 	id="schoolRoom" required="true" 
+	                            					value="#{manageAssignmentsController.schoolRoomField}"
+	                            					converter="#{assignmentController.schoolRoomConverter}"
+	                            					disabled="#{(manageAssignmentsController.readOnly) or
+				            									(manageAssignmentsController.selectedEntity.id != null)}">
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems 	
+											value ="#{manageAssignmentsController.schoolRooms}" var="schoolRoom" 
+											itemLabel="#{schoolRoom.professor} -> #{schoolRoom.course} -> #{schoolRoom.toString()}" 
+											itemValue ="#{schoolRoom}"/>
+										<p:ajax event="change" update="schoolRoomField"
+												listener="#{manageAssignmentsController.updateSchoolRoomField}" />
+								</p:selectOneMenu>
+	                        </ui:decorate>
+	                    </h:panelGroup><br />
+	                    
+	                    <h:panelGroup id="numberField">
+	                        <ui:decorate template="/resources/formfield.xhtml">
+	                            <ui:param name="fieldName" value="form:number" />
+	                            <ui:param name="tooltip" value="#{msgs['manageAssignments.form.number.tooltip']}" />
+	                            <ui:define name="label">
+	                            	<h:outputText value="#{msgs['manageAssignments.form.number']}" />
+	                            </ui:define>
+	                            <p:inputMask 	id="number" value="#{manageAssignmentsController.selectedEntity.number}" 
+	                            				maxlength="2" required="true" mask="99" size="1"
+	                            				disabled="#{manageAssignmentsController.readOnly}">	                                
+	                            </p:inputMask>
+	                        </ui:decorate>
+	                    </h:panelGroup><br />
+	                    
+						<h:panelGroup id="subjectField">
+		                    <ui:decorate template="/resources/formfield.xhtml">
+		                        <ui:param name="fieldName" value="form:subject" />
+		                        <ui:param name="tooltip" value="#{msgs['manageAssignments.form.subject.tooltip']}" />
+		                        <ui:define name="label">
+		                        	<h:outputText value="#{msgs['manageAssignments.form.subject']}" />
+		                        </ui:define>
+		                        <p:inputText 	id="subject" size="75" maxlength="60" required="true" 
+		                        				value="#{manageAssignmentsController.selectedEntity.subject}" 
+		                        				disabled="#{manageAssignmentsController.readOnly}">		                            
+		                        </p:inputText>
+		                    </ui:decorate>
+	                    </h:panelGroup><br />              
+	                    
+	                    <h:panelGroup id="deliveryDateField">
+	                        <ui:decorate template="/resources/formfield.xhtml">
+	                            <ui:param name="fieldName" value="form:deliveryDate" />
+	                            <ui:param name="tooltip" value="#{msgs['manageAssignments.form.deliveryDate.tooltip']}" />
+	                            <ui:define name="label">
+	                            	<h:outputText value="#{msgs['manageAssignments.form.deliveryDate']}" />
+	                            </ui:define>
+	                            <p:calendar 	id="deliveryDate" value="#{manageAssignmentsController.selectedEntity.deliveryDate}" 
+	                            				size="6" mask="true" required="true" pattern="dd/MM/yyyy"
+	                            				disabled="#{manageAssignmentsController.readOnly}">
+	                            </p:calendar>
+	                        </ui:decorate>
+	                    </h:panelGroup><br />
+	                    
+	                    <h:panelGroup id="valueField">
+	                        <ui:decorate template="/resources/formfield.xhtml">
+	                            <ui:param name="fieldName" value="form:value" />
+	                            <ui:param name="tooltip" value="#{msgs['manageAssignments.form.value.tooltip']}" />
+	                            <ui:define name="label">
+	                            	<h:outputText value="#{msgs['manageAssignments.form.value']}" />
+	                            </ui:define>
+	                            <p:inputText 	id="value" size="2" required="true" maxlength="6"
+	                            				value="#{manageAssignmentsController.selectedEntity.value}"
+	                            				disabled="#{manageAssignmentsController.readOnly}">	                                
+	                            </p:inputText>
+	                        </ui:decorate>
+	                    </h:panelGroup><br />
+	                    
+	                    <h:panelGroup id="numMaxParticipantsField">
+	                        <ui:decorate template="/resources/formfield.xhtml">
+	                            <ui:param name="fieldName" value="form:numMaxParticipants" />
+	                            <ui:param name="tooltip" value="#{msgs['manageAssignments.form.numMaxParticipants.tooltip']}" />
+	                            <ui:define name="label">
+	                            	<h:outputText value="#{msgs['manageAssignments.form.numMaxParticipants']}" />
+	                            </ui:define>	                            
+	                            <p:inputMask 	id="numMaxParticipants" maxlength="2" required="true" mask="99" size="1" 
+	                            				value="#{manageAssignmentsController.selectedEntity.numMaxParticipants}"
+	                            				disabled="#{manageAssignmentsController.readOnly}">	                                
+	                            </p:inputMask>
+	                        </ui:decorate>
+	                    </h:panelGroup><br />                    
+	                    
+	                    <h:panelGroup id="valueDiscountDelayField">
+	                        <ui:decorate template="/resources/formfield.xhtml">
+	                            <ui:param name="fieldName" value="form:valueDiscountDelay" />
+	                            <ui:param name="tooltip" value="#{msgs['manageAssignments.form.valueDiscountDelay.tooltip']}" />
+	                            <ui:define name="label">
+	                            <h:outputText value="#{msgs['manageAssignments.form.valueDiscountDelay']}" />
+	                            </ui:define>
+	                            <p:inputText 	id="valueDiscountDelay" size="2" required="false" maxlength="6" 
+	                            				value="#{manageAssignmentsController.selectedEntity.valueDiscountDelay}" 
+	                            				disabled="#{manageAssignmentsController.readOnly}">
+	                            </p:inputText>
+	                        </ui:decorate>
+	                    </h:panelGroup><br />                    
+	                    
+	                    <ui:decorate template="/resources/formbutton.xhtml">
+	                        <h:panelGroup rendered="#{! manageAssignmentsController.readOnly}">
+	                        	<p:commandButton 	action="#{manageAssignmentsController.save}" 
+	                        						value="#{msgs['crud.button.save']}"
+	                            					update="@all" icon="ui-icon-disk" />
+	                        
+	                            <p:commandButton 	action="#{manageAssignmentsController.list}" 
+	                            					value="#{msgs['crud.button.cancel']}"
+	                            					immediate="true" icon="ui-icon-closethick" />
+	                        </h:panelGroup>
+	                        
+	                        <h:panelGroup rendered="#{manageAssignmentsController.readOnly}">
+	                            <p:commandButton 	action="#{manageAssignmentsController.list}" 
+	                            					value="#{msgs['crud.button.back']}"
+	                            					immediate="true" icon="ui-icon-arrowreturnthick-1-w" />
+	                        </h:panelGroup>
+	                    </ui:decorate><br />
+                    </p:panel>
+                </h:form>
+            </ui:decorate>
+        </div>
+    </ui:define>
+</ui:composition>

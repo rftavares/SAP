@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				template="/resources/decorator/default/decorator.xhtml">
+	
+	<ui:define name="title"><h:outputText value="#{msgs['session.error.title']}" /></ui:define>
+	
+	<ui:define name="contents">
+		<h2><h:outputText value="#{msgs['session.error.title']}" /></h2>
+		
+		<div class="cleaner_h20" />
+	
+		<h3><h:outputText value="#{msgs['session.error.detail01']}" /></h3>
+		
+		<div class="cleaner_h20" />
+		
+		<div align="center">
+        	<p:commandButton 	action="#{sessionController.returnToIndexPage}" 
+        						value="#{msgs['crud.button.backHome']}" icon="ui-icon-home" />
+        </div>   
+	
+	</ui:define>
+</ui:composition>

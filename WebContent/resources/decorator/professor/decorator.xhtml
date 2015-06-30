@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/images/icone.png" rel="shortcut icon" type="image/ico" />
+	<link href="#{facesContext.externalContext.requestContextPath}/resources/templatemo_style.css" rel="stylesheet" type="text/css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title><h:outputText value="SAP :: " /><ui:insert name="title" /></title>
+</h:head>
+<h:body>
+	<div id="templatemo_header_wrapper">
+		<div id="site_title">
+			<h1>
+				<a href="#"> 
+					<img alt="Site Title" src="#{facesContext.externalContext.requestContextPath}/resources/images/templatemo_logo.png" />
+				</a>
+			</h1>
+		</div>
+
+		<h:form>			
+			<p:menubar>				
+				<p:menuitem value="#{msgs['menu.home.text']}" icon="ui-icon-home" url="/indexProfessor.faces" />				
+				<p:submenu label="#{msgs['menu.schoolroom.text']}" icon="ui-icon-note">
+					<p:menuitem value="#{msgs['menu.schoolroom.manageSchoolRooms.text']}" icon="ui-icon-document" 
+								url="/assignments/manageSchoolRooms/list.faces" />
+					<p:menuitem value="#{msgs['menu.schoolroom.manageDisciplines.text']}" icon="ui-icon-document" 
+								url="/assignments/manageDisciplines/list.faces" />
+					<p:menuitem value="#{msgs['menu.schoolroom.manageStudents.text']}" icon="ui-icon-document" 
+								url="/assignments/manageStudents/list.faces" />
+					<p:menuitem value="#{msgs['menu.schoolroom.associateStudents.text']}" icon="ui-icon-link" 
+								url="/assignments/associateStudents/form.faces" />
+				</p:submenu>
+				<p:submenu label="#{msgs['menu.assignment.text']}" icon="ui-icon-suitcase">
+					<p:menuitem value="#{msgs['menu.assignment.manageAssignments.text']}" icon="ui-icon-document" 
+								url="/assignments/manageAssignments/list.faces" />
+					<p:menuitem value="#{msgs['menu.assignment.manageAssignmentGroups.text']}" icon="ui-icon-document" 
+								url="/assignments/manageAssignmentGroups/list.faces" />
+				</p:submenu>
+				<p:submenu label="#{msgs['menu.researchGroup.text']}" icon="ui-icon-search">					 
+					<p:menuitem value="#{msgs['menu.researchGroup.manageSupervisions.text']}" icon="ui-icon-document" 
+								url="/labs/manageSupervisions/list.faces" />
+				</p:submenu>
+											
+				<p:submenu label="#{msgs['menu.settings']}" icon="ui-icon-gear">
+					<p:menuitem value="#{msgs['menu.settings.changeData']}" icon="ui-icon-pencil" url="/login/formProfessor.faces" />
+				</p:submenu>
+								
+				<f:facet name="options">
+					<p:outputLabel 	value="#{msgs['menu.user.text']} #{sessionController.currentProfessor.name}"
+									style="font-weight: bold; font-family: Verdana, Arial, Helvetica, sans-serif"/>
+					
+					<p:spacer width="50" height="10" />
+				
+					<p:commandButton 	value="#{msgs['crud.button.logout']}" icon="ui-icon-locked"
+										action="#{sessionController.logout}" update="@all"  />
+				</f:facet>
+			</p:menubar>
+		</h:form>
+	</div><br />	
+	
+	<div class="content_box">
+		<!-- SAP global messages: -->
+		<h:form id="globalMessages">
+			<p:growl id="messages" globalOnly="true" showSummary="true" showDetail="true" sticky="true" />
+		</h:form>
+	
+		<ui:insert name="contents">Content page.</ui:insert>
+		
+		<div class="cleaner" />
+	</div><br />
+
+	<div id="templatemo_footer_wrapper">
+		<div id="templatemo_footer">Copyright © 2015 
+			<a href="#{facesContext.externalContext.requestContextPath}/index#{sessionController.typeUser}.faces">SAP</a>
+		</div>
+	</div>
+</h:body>
+</html>

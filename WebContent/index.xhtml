@@ -1,0 +1,31 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:p="http://primefaces.org/ui"
+				template="/resources/decorator/#{sapInfo.decorator}/decorator.xhtml">
+	
+	<ui:define name="title"><h:outputText value="#{msgs['index.title']}" /></ui:define>
+	
+	<ui:define name="contents">
+		<h2><h:outputText value="#{msgs['index.sap.description']}" /></h2><br />
+		
+		<p>
+			<h:outputText value="#{msgs['index.default.description.line01']}" />
+		   	<h:outputText value="#{msgs['index.default.description.line02']}" />
+		   	<h:outputText value="#{msgs['index.default.description.line03']}" />
+		   	<h:outputText value="#{msgs['index.default.description.line04']}" />
+		</p>
+
+		<div class="cleaner_h20" />
+
+		<ul class="list_01">
+			<li><h:outputText value="#{msgs['index.default.list.item01']}" /></li>
+			<li><h:outputText value="#{msgs['index.default.list.item02']}" /></li>
+			<li><h:outputText value="#{msgs['index.default.list.item03']}" /></li>
+			<li><h:outputText value="#{msgs['index.default.list.item04']}" /></li>
+			<li><h:outputText value="#{msgs['index.default.list.item05']}" /></li>
+			<li><h:outputText value="#{msgs['index.default.list.item06']}" /></li>
+		</ul>
+	</ui:define>
+</ui:composition>
