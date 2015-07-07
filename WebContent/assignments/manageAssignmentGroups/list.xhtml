@@ -110,10 +110,6 @@
                             <h:outputText value="#{entity.number}"/>
                         </p:column>
                         
-                        <p:column headerText="#{msgs['manageAssignmentGroups.form.studentsGroup']}" style="text-align: center;">
-                            <h:outputText value="#{entity.number}"/>
-                        </p:column>
-
                         <p:ajax event="rowSelect" update=":buttonsForm" />
                     </p:dataTable>
                 </h:panelGroup>
@@ -148,7 +144,7 @@
                     <div class="nemoUtilsFormInternalButton">
                     	<p:commandButton 	action="#{manageAssignmentGroupsController.delete}" 
                         					value="#{msgs['crud.button.confirmDeletion']}" icon="ui-icon-check" 
-                        					update=":trashForm :buttonsForm :listingForm" />
+                        					update=":trashForm :buttonsForm :listingForm :globalMessages" />
                     
                         <p:commandButton 	action="#{manageAssignmentGroupsController.cancelDeletion}" 
                         					value="#{msgs['crud.button.cancelDeletion']}" icon="ui-icon-closethick" 

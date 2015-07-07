@@ -51,4 +51,18 @@ public interface ManageSchoolRoomsService extends CrudService<SchoolRoom> {
 	 * 		A SchoolRooms object that matches the query.
 	 ***************************************************************************************************/
 	public List<SchoolRoom> getSchoolRooms(Period period, Professor professor);
+	
+	/************************************************************************************************** 
+	 * Method used to verify that a student was removed from schoolRoom and has AssignmentGroup.
+	 * 
+	 * @param student
+	 *      Student will be removed from schoolRoom.
+	 *      
+	 * @param schoolRoom
+	 *      SchoolRoom that the student is enrolled.
+	 * 
+	 * @return 
+	 * 		String with the validation error message key, if exists.
+	 ***************************************************************************************************/
+	public String validateExclusionStudent(Student student, SchoolRoom schoolRoom);
 }

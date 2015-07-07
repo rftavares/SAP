@@ -145,7 +145,7 @@ public class SessionController extends JSFController {
 		}
 		else {
 			/** Displays on the screen error message at login. */
-			addGlobalI18nMessage("msgs", FacesMessage.SEVERITY_WARN, "login.professor.messageError", "");
+			addGlobalI18nMessage("msgs", FacesMessage.SEVERITY_INFO, "login.professor.messageError", "");
 			return "";
 		}		
 	}
@@ -171,7 +171,8 @@ public class SessionController extends JSFController {
 			/** Add user in the session. */
 			HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
 			session.setAttribute("user", currentStudent.getName());
-			
+			session.setAttribute("student", currentStudent);
+						
 			/** Returns to the student homepage. */
 			return "/indexStudent.faces?faces-redirect=true";
 		}
@@ -205,6 +206,7 @@ public class SessionController extends JSFController {
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
 		session.removeAttribute("user");
 		session.removeAttribute("professor");
+		session.removeAttribute("student");
 						
 		/** Returns to the home page. */
 		return "/index.faces?faces-redirect=true";		

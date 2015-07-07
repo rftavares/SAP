@@ -14,6 +14,7 @@ import br.ufes.inf.nemo.util.ejb3.persistence.PersistentObjectSupport_;
 @StaticMetamodel(AssignmentGroup.class)
 public class AssignmentGroup_ extends PersistentObjectSupport_ {	
 	public static volatile SingularAttribute<AssignmentGroup, String> number;
-	public static volatile SingularAttribute<AssignmentGroup, Assignment > assignment;
-	public static volatile SetAttribute<AssignmentGroup, DeliveredAssignment> deliveredAssignment;	
+	public static volatile SingularAttribute<AssignmentGroup, Assignment > assignment;	
+	public static volatile SetAttribute<AssignmentGroup, Student> students;
+	//public static volatile SetAttribute<AssignmentGroup, DeliveredAssignment> deliveredAssignment;	
 }

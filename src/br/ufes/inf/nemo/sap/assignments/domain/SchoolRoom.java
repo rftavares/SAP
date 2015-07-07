@@ -40,7 +40,7 @@ public class SchoolRoom extends PersistentObjectSupport implements Comparable<Sc
 	private Course course;
 	
 	/** Assignment related to the schoolroom. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "schoolRoom")
+	@OneToMany(mappedBy = "schoolRoom")
 	private Set<Assignment> assignments;
 
 	/** Getter for number. */
@@ -91,6 +91,20 @@ public class SchoolRoom extends PersistentObjectSupport implements Comparable<Sc
 	/** Setter for course. */
 	public void setCourse(Course course) {
 		this.course = course;
+	}
+	
+	/** Students of the schoolRoom. */	
+	@ManyToMany(fetch=FetchType.EAGER)
+	private Set<Student> students;
+	
+	/** Getter for students. */
+	public Set<Student> getStudents() {
+		return students;
+	}
+
+	/** Setter for students. */
+	public void setStudents(Set<Student> students) {
+		this.students = students;
 	}
 	
 	/** Representation of class in text form. */

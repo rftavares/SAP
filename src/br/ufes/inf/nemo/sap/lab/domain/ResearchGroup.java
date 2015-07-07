@@ -29,7 +29,7 @@ public class ResearchGroup extends PersistentObjectSupport implements Comparable
 	private String site;
 	
 	/** Professors related to the research group. */
-	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "researchGroups")
+	@ManyToMany(fetch=FetchType.EAGER)
 	private Set<Professor> professors;
 
 	/** Getter for name. */

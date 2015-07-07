@@ -39,6 +39,20 @@
                 	<p:panel id="panel" header="#{msgs['crud.text.informationData']}"><br />
 	                	<p:focus context="panel"/>
                 
+                		<h:panelGroup id="enrollmentField">
+	                        <ui:decorate template="/resources/formfield.xhtml">
+	                            <ui:param name="fieldName" value="form:enrollment" />
+	                            <ui:param name="tooltip" value="#{msgs['manageStudents.form.enrollment.tooltip']}" />
+	                            <ui:define name="label">
+	                            	<h:outputText value="#{msgs['manageStudents.form.enrollment']}" />
+	                            </ui:define>
+	                            <p:inputMask 	id="enrollment" size="7" required="true" mask="9999999999" 
+	                            				value="#{manageStudentsController.selectedEntity.enrollment}"
+	                            				disabled="#{manageStudentsController.readOnly}">	                                
+	                            </p:inputMask>
+	                        </ui:decorate>
+	                    </h:panelGroup><br />
+                
 	                    <h:panelGroup id="nameField">
 	                        <ui:decorate template="/resources/formfield.xhtml">
 	                            <ui:param name="fieldName" value="form:name" />
@@ -85,20 +99,6 @@
 	                            <p:password 	id="password" size="5" maxlength="10"
 	                            				value="#{manageStudentsController.selectedEntity.password}"  
 	                            				disabled="#{manageStudentsController.readOnly}"/>                            
-	                        </ui:decorate>
-	                    </h:panelGroup><br />
-	                    
-	                    <h:panelGroup id="enrollmentField">
-	                        <ui:decorate template="/resources/formfield.xhtml">
-	                            <ui:param name="fieldName" value="form:enrollment" />
-	                            <ui:param name="tooltip" value="#{msgs['manageStudents.form.enrollment.tooltip']}" />
-	                            <ui:define name="label">
-	                            	<h:outputText value="#{msgs['manageStudents.form.enrollment']}" />
-	                            </ui:define>
-	                            <p:inputMask 	id="enrollment" size="7" required="true" mask="9999999999" 
-	                            				value="#{manageStudentsController.selectedEntity.enrollment}"
-	                            				disabled="#{manageStudentsController.readOnly}">	                                
-	                            </p:inputMask>
 	                        </ui:decorate>
 	                    </h:panelGroup><br />
 	                    

@@ -27,9 +27,13 @@ public class AssignmentGroup extends PersistentObjectSupport implements Comparab
 	@ManyToOne
 	private Assignment assignment;
 	
+	/** Students of the assignmentGroup. */
+	@ManyToMany(fetch=FetchType.EAGER)
+	private Set<Student> students;
+	
 	/** Delivered assignments related to the assignment Group. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "assignmentGroup")
-	private Set<DeliveredAssignment> deliveredAssignment;
+	//@OneToMany(cascade = CascadeType.ALL, mappedBy = "assignmentGroup")
+	//private Set<DeliveredAssignment> deliveredAssignment;
 
 	/** Getter for number. */
 	public String getNumber() {
@@ -45,21 +49,31 @@ public class AssignmentGroup extends PersistentObjectSupport implements Comparab
 	public Assignment getAssignment() {
 		return assignment;
 	}
-
+	
 	/** Setter for assignment. */
 	public void setAssignment(Assignment assignment) {
 		this.assignment = assignment;
 	}
-	
-	/** Getter for deliveredAssignment. */
-	public Set<DeliveredAssignment> getDeliveredAssignment() {
-		return deliveredAssignment;
+
+	/** Getter for students. */
+	public Set<Student> getStudents() {
+		return students;
 	}
 
-	/** Setter for deliveredAssignment. */
-	public void setDeliveredAssignment(Set<DeliveredAssignment> deliveredAssignment) {
-		this.deliveredAssignment = deliveredAssignment;
+	/** Setter for students. */
+	public void setStudents(Set<Student> students) {
+		this.students = students;
 	}
+
+	/** Getter for deliveredAssignment. */
+	//public Set<DeliveredAssignment> getDeliveredAssignment() {
+	//	return deliveredAssignment;
+	//}
+
+	/** Setter for deliveredAssignment. */
+	//public void setDeliveredAssignment(Set<DeliveredAssignment> deliveredAssignment) {
+	//	this.deliveredAssignment = deliveredAssignment;
+	//}
 
 	/** The nemo-utils mini CRUD framework requires that classes managed by it be comparable for sorting. */
 	@Override

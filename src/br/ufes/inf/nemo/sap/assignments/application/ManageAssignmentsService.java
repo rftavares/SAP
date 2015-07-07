@@ -18,6 +18,17 @@ import br.ufes.inf.nemo.util.ejb3.application.CrudService;
 @Local
 public interface ManageAssignmentsService extends CrudService<Assignment> {
 	/************************************************************************************************** 
+	 * Method used to validates rules to delete the entity.
+	 * 
+	 * @param assignment
+	 *      Assignment that will be deleted.
+	 * 
+	 * @return 
+	 * 		String with the validation error message key, if exists.
+	 ***************************************************************************************************/
+	public String validateExclusion(Assignment assignment);
+	
+	/************************************************************************************************** 
 	 * Method used to return a list of all assignments.
 	 * 
 	 * @return 

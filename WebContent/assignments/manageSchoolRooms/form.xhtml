@@ -115,7 +115,24 @@
 	                            				disabled="#{manageSchoolRoomsController.readOnly}">	                                
 	                            </p:inputMask>
 	                        </ui:decorate>
-	                    </h:panelGroup><br />                    
+	                    </h:panelGroup><br />
+	                    
+	                    <h:panelGroup id="studentsField">
+	                    	<ui:decorate template="/resources/formfield.xhtml">
+	                    		<ui:param name="fieldName" value="form:students" />
+	                    		<ui:define name="label">
+	                            	<h:outputText value="#{msgs['manageSchoolRooms.form.students']}" />
+	                            </ui:define>
+		                        <p:pickList id="students" value="#{manageSchoolRoomsController.students}" var="student" 
+		                        			itemLabel="#{student.toString()}" itemValue="#{student}" filterMatchMode="contains"
+		                        			disabled="#{manageSchoolRoomsController.readOnly}"
+		                        			converter="#{assignmentController.studentConverter}"
+		                        			showSourceFilter="true" showTargetFilter="true">                        			
+		                        	<f:facet name="sourceCaption">#{msgs['manageSchoolRooms.form.studentsAvailable']}</f:facet>
+		   							<f:facet name="targetCaption">#{msgs['manageSchoolRooms.form.studentsSchoolRoom']}</f:facet>
+		                        </p:pickList>
+	                        </ui:decorate>
+                        </h:panelGroup><br />              
 	                    
 	                    <ui:decorate template="/resources/formbutton.xhtml">
 	                        <h:panelGroup rendered="#{! manageSchoolRoomsController.readOnly}">

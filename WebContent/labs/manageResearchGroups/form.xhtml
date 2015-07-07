@@ -63,6 +63,23 @@
 	                        </ui:decorate>
 	                    </h:panelGroup><br />
 	                    
+	                    <h:panelGroup id="professorsField">
+	                    	<ui:decorate template="/resources/formfield.xhtml">
+	                    		<ui:param name="fieldName" value="form:professors" />
+	                    		<ui:define name="label">
+	                            	<h:outputText value="#{msgs['manageResearchGroups.form.professors']}" />
+	                            </ui:define>
+		                        <p:pickList id="professors" value="#{manageResearchGroupsController.professors}" var="professor" 
+		                        			itemLabel="#{professor.toString()}" itemValue="#{professor}" filterMatchMode="contains"
+		                        			disabled="#{manageResearchGroupsController.readOnly}"
+		                        			converter="#{assignmentController.professorConverter}"
+		                        			showSourceFilter="true" showTargetFilter="true">                        			
+		                        	<f:facet name="sourceCaption">#{msgs['manageResearchGroups.form.professorsAvailable']}</f:facet>
+		   							<f:facet name="targetCaption">#{msgs['manageResearchGroups.form.professorsGroup']}</f:facet>
+		                        </p:pickList>
+	                        </ui:decorate>
+                        </h:panelGroup><br />
+	                    
 	                    <ui:decorate template="/resources/formbutton.xhtml">
 	                        <h:panelGroup rendered="#{! manageResearchGroupsController.readOnly}">
 	                        	<p:commandButton 	action="#{manageResearchGroupsController.save}" value="#{msgs['crud.button.save']}"

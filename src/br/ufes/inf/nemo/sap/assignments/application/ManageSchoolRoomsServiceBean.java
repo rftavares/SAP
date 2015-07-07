@@ -1,5 +1,6 @@
 package br.ufes.inf.nemo.sap.assignments.application;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.*;
@@ -32,6 +33,10 @@ public class ManageSchoolRoomsServiceBean 	extends CrudServiceBean<SchoolRoom>
 	/** The DAO for Assignment objects. */
 	@EJB
 	private AssignmentDAO assignmentDAO;
+	
+	/** The DAO for AssignmentGroup objects. */
+	@EJB
+	private AssignmentGroupDAO assignmentGroupDAO;
 	
 	/** Getter DAO for SchoolRoom objects. */
 	@Override
@@ -117,6 +122,43 @@ public class ManageSchoolRoomsServiceBean 	extends CrudServiceBean<SchoolRoom>
 		}
 		
 		return errorMessageKey;
+	}
+	
+	/** Method used to verify that a student was removed from schoolRoom and has AssignmentGroup. */
+	public String validateExclusionStudent(Student student, SchoolRoom schoolRoom){		
+		/** Checks if the schoolRoom has some assignment. */
+		List<Assignment> listAssignments = null;
+		
+		try {
+			listAssignments = assignmentDAO.retrieveBySchoolRoom(schoolRoom);
+		}	
+		catch (PersistentObjectNotFoundException e) {}
+		catch (MultiplePersistentObjectsFoundException e) {}
+	
+		if(listAssignments != null){
+			/** Checks if the assignment has some assignmentGroup. */
+			List<AssignmentGroup> listAssignmentGroups = null;
+			
+			for(Assignment assigment : listAssignments){
+				try {					
+					listAssignmentGroups = assignmentGroupDAO.retrieveByAssignment(assigment);
+					
+					for(AssignmentGroup assignmentGroup : listAssignmentGroups){
+						/** Returns the students of the assignmentGroup. */
+						List<Student> studentsGroup = new ArrayList<Student>(assignmentGroup.getStudents());
+						
+						/** If the student is in the AssignmentGroup, returns an error message. */
+						if(studentsGroup.contains(student)){
+							return "manageSchoolRooms.form.students.validation";
+						}
+					}						
+				}	
+				catch (PersistentObjectNotFoundException e) {}
+				catch (MultiplePersistentObjectsFoundException e) {}
+			}
+		}
+		
+		return "";
 	}
 	
 	/** Returns list of all schoolRooms. */

@@ -49,11 +49,7 @@ public class Professor extends PersistentObjectSupport implements Comparable<Pro
 	/** Supervision related to the coadvisor. */
 	@OneToMany(mappedBy = "advisor")
 	private Set<Supervision> coadvisor;
-	
-	/** Research groups related to the professor. */
-	@ManyToMany
-	private Set<ResearchGroup> researchGroups;
-	
+		
 	/** Getter for name. */
 	public String getName() {
 		return name;
@@ -122,16 +118,6 @@ public class Professor extends PersistentObjectSupport implements Comparable<Pro
 	/** Setter for coadvisor. */
 	public void setCoadvisor(Set<Supervision> coadvisor) {
 		this.coadvisor = coadvisor;
-	}
-	
-	/** Getter for researchGroups. */
-	public Set<ResearchGroup> getResearchGroups() {
-		return researchGroups;
-	}
-
-	/** Setter for researchGroups. */
-	public void setResearchGroups(Set<ResearchGroup> researchGroups) {
-		this.researchGroups = researchGroups;
 	}
 	
 	/** Representation of class in text form. */

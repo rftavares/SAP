@@ -26,7 +26,7 @@
   	<!-- Filter used in the pages of requests to verify that the session has expired and redirect to the error screen. -->
   	<filter>
 		<filter-name>ErrorPageFilter</filter-name>
-		<filter-class>br.ufes.inf.nemo.sap.ErrorPageFilter</filter-class>
+		<filter-class>br.ufes.inf.nemo.sap.servlet.ErrorPageFilter</filter-class>
 	</filter>
 	
 	<!-- Filters out any type of page request. -->

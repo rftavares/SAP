@@ -1,5 +1,7 @@
 package br.ufes.inf.nemo.sap.assignments.persistence;
 
+import java.util.*;
+
 import javax.ejb.Local;
 
 import br.ufes.inf.nemo.sap.assignments.domain.*;
@@ -31,4 +33,8 @@ public interface AssignmentGroupDAO extends BaseDAO<AssignmentGroup> {
 	 */
 	public AssignmentGroup retrieveByNumber(Assignment assignment, String number) 
 				throws PersistentObjectNotFoundException, MultiplePersistentObjectsFoundException;
+	
+	/** Retrieves the list of assignment group that has the exact assignment specified in the parameter. */	
+	public List<AssignmentGroup> retrieveByAssignment(Assignment assignment) 
+			throws 	PersistentObjectNotFoundException, MultiplePersistentObjectsFoundException;
 }

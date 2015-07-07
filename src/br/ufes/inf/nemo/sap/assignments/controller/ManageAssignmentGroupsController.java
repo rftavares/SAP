@@ -58,23 +58,7 @@ public class ManageAssignmentGroupsController extends CrudController<AssignmentG
 	public ManageAssignmentGroupsController() {
 	    viewPath = "/assignments/manageAssignmentGroups/";
 	    bundleName = "msgs";
-	}
-	
-	/** Creates a new entity AssignmentGroup and clean the page fields. */
-	@Override
-	protected AssignmentGroup createNewEntity() {
-		periodField = null;
-		schoolRoomField = null;
-		assignmentField = null;
-		
-		if(schoolRooms != null) {
-			schoolRooms.clear();
-		}
-		if(assignments != null){
-			assignments.clear();
-		}
-		return new AssignmentGroup();
-	}
+	}	
 	
 	/** Period variable used to store the current value of the entity on the page. */
 	private Period periodField;
@@ -144,12 +128,9 @@ public class ManageAssignmentGroupsController extends CrudController<AssignmentG
 	
 	/** List of students. */
 	private DualListModel<Student> students;
-	
-	/** Getter for list of students. */
-	public DualListModel<Student> getStudents() {
-		List<Student> studentsTarget = manageStudentsService.getStudents(); 
 		
-		students = new DualListModel<Student>(studentsTarget, new ArrayList<Student>());
+	/** Getter for list of students. */
+	public DualListModel<Student> getStudents() {		
 		return students;
 	}
 	
@@ -158,21 +139,80 @@ public class ManageAssignmentGroupsController extends CrudController<AssignmentG
 		this.students = students;
 	}
 	
+	/** Creates a new entity AssignmentGroup and clean the page fields. */
+	@Override
+	protected AssignmentGroup createNewEntity() {
+		periodField = null;
+		schoolRoomField = null;
+		assignmentField = null;
+		
+		if(schoolRooms != null) {
+			schoolRooms.clear();
+		}
+		
+		if(assignments != null){
+			assignments.clear();
+		}
+		
+		students = new DualListModel<Student>(new ArrayList<Student>(), new ArrayList<Student>());
+		
+		return new AssignmentGroup();
+	}
+	
 	/** Updates the entity with the value of the selected field on the page. */
 	@Override
-    public String save() {
-    	selectedEntity.setAssignment(assignmentField);    	
+    public String save() {		
+    	selectedEntity.setAssignment(assignmentField);
+    	selectedEntity.setStudents(new HashSet<Student>(students.getTarget()));
     	return super.save();
     }
     
     /** Method called when modifying an entity. Loads the page's fields with entity data, if it has been selected. */
     @Override
     protected void checkSelectedEntity() {
+    	/** Fills the field period with the value of the selected entity. */
     	periodField = selectedEntity.getAssignment().getSchoolRoom().getPeriod();
+    	
+    	/** Fills the field schoolRoom with the value of the selected entity. */
     	schoolRoomField = selectedEntity.getAssignment().getSchoolRoom();    	
+    	/** Carries all schoolRooms of the selected period. */
     	schoolRooms = manageSchoolRoomsService.getSchoolRooms(selectedEntity.getAssignment().getSchoolRoom().getPeriod());
+    	
+    	/** Fills the field assignment with the value of the selected entity. */
     	assignmentField = selectedEntity.getAssignment();
-    	assignments = manageAssignmentsService.getAssignmentsSchoolRoom(selectedEntity.getAssignment().getSchoolRoom());
+    	/** Carries all assignments of the selected schoolRoom. */
+    	assignments = manageAssignmentsService.getAssignmentsSchoolRoom(selectedEntity.getAssignment().getSchoolRoom());   	
+    	
+    	/** Retrieves the students in the selected assignmentGroup. */
+    	List<Student> studentsGroup = new ArrayList<Student>(selectedEntity.getStudents());
+    	students = new DualListModel<Student>(new ArrayList<Student>(), new ArrayList<Student>());
+    	
+    	/** Carries all students in the selected schoolRoom. */
+    	List<Student> sourceList = new ArrayList<Student>(selectedEntity.getAssignment().getSchoolRoom().getStudents());
+    	
+    	/** Remove from the list the students who are already in the assignmentGroup. */
+    	for(Student item : studentsGroup){
+    		sourceList.remove(item);
+    	}
+    	    	
+    	/** Carries all assignmentGroups in the selected assignment. */
+    	List<AssignmentGroup> grupos = new ArrayList<AssignmentGroup>(selectedEntity.getAssignment().getAssignmentGroups());
+    	
+    	/** Remove from the list the students who are already in any assignmentGroup. */
+    	for(AssignmentGroup item : grupos){
+    		List<Student> auxStudents = new ArrayList<Student>(item.getStudents());
+    		
+    		for(Student studentGroup : auxStudents){
+        		sourceList.remove(studentGroup);
+        	}
+    	}
+    	
+    	/** Loads the data on the page component. */
+    	students.setSource(sourceList);
+    	
+    	/** Loads the data on the page component. */
+    	students.setSource(sourceList);
+    	students.setTarget(studentsGroup);
     }
     
     /** Method used to return a list of the schoolRoom of a selected period. */
@@ -200,20 +240,43 @@ public class ManageAssignmentGroupsController extends CrudController<AssignmentG
 	    /** Get the professor logged. */
 	    Professor professor = (Professor) session.getAttribute("professor");
 	    
-	    /** Checks whether the professor is administrator. */
-	    if(professor.getAdministrator() == AdministratorEnum.YES){
-	    	/** Loads all classes of the selected period in the list. */
-	    	schoolRooms = manageSchoolRoomsService.getSchoolRooms(periodEntity);
+	    System.out.println("TESTE ANTES IF");
+	    
+	    /** Checks if the User is a teacher. */
+	    if(professor != null){
+		    /** Checks whether the professor is administrator. */
+		    if(professor.getAdministrator() == AdministratorEnum.YES){
+		    	/** Loads all schoolRooms of the selected period in the list. */
+		    	schoolRooms = manageSchoolRoomsService.getSchoolRooms(periodEntity);
+		    }
+		    else{
+		    	/** Loads in the list all schoolRooms of the selected period and professor. */
+		    	schoolRooms = manageSchoolRoomsService.getSchoolRooms(periodEntity, professor);
+		    }
 	    }
-	    else{
-	    	/** Loads in the list all classes of the selected period and professor. */
-	    	schoolRooms = manageSchoolRoomsService.getSchoolRooms(periodEntity, professor);
+	    else{	/** The User is a student. */
+	    	/** Get the student logged. */
+		    Student student = (Student) session.getAttribute("student");
+	    	
+		    /** Loads all schoolRooms of the selected period in the list. */
+		    schoolRooms = manageSchoolRoomsService.getSchoolRooms(periodEntity);
+		    /** Loads all schoolRooms of the selected period in the list auxiliary. */
+	    	List<SchoolRoom> auxSchoolRooms = manageSchoolRoomsService.getSchoolRooms(periodEntity);
+	    	
+	    	/** Remove from the list the schoolRoom that do not have the student. */
+	    	for(SchoolRoom schoolRoom : auxSchoolRooms){
+	    		List<Student> listStudents = new ArrayList<Student>(schoolRoom.getStudents());
+	    		if(! listStudents.contains(student)){
+	    			schoolRooms.remove(schoolRoom);
+	    		}
+	    	}
 	    }
+	    
+	    students = new DualListModel<Student>(new ArrayList<Student>(), new ArrayList<Student>());
 	}
     
 	/** Method used to return a list of the assignments of a selected schoolRoom. */
-	public void loadAssignments(AjaxBehaviorEvent event) {
-		
+	public void loadAssignments(AjaxBehaviorEvent event) {		
 		/** Returns the component that triggered the event ajax. */
 		Map<String, Object> map = event.getComponent().getAttributes();
 		SchoolRoom schoolRoomEntity = (SchoolRoom) map.get("value");
@@ -225,13 +288,59 @@ public class ManageAssignmentGroupsController extends CrudController<AssignmentG
 		}
 		
     	/** Loads all assignments of the selected schoolRoom in the list. */
-		assignments = manageAssignmentsService.getAssignmentsSchoolRoom(schoolRoomEntity);	    
+		assignments = manageAssignmentsService.getAssignmentsSchoolRoom(schoolRoomEntity);
+		
+		students = new DualListModel<Student>(new ArrayList<Student>(), new ArrayList<Student>());
+	}
+	
+	/** Method used to return a list of the students of a selected assignment. */
+	public void loadStudents(AjaxBehaviorEvent event) {
+		/** Returns the component that triggered the event ajax. */
+		Map<String, Object> map = event.getComponent().getAttributes();
+		Assignment assignmentEntity = (Assignment) map.get("value");
+		
+		/** Clears the field students. */
+    	students = new DualListModel<Student>(new ArrayList<Student>(), new ArrayList<Student>());
+    	
+    	/** Carries all students in the selected schoolRoom. */
+    	List<Student> sourceList = new ArrayList<Student>(assignmentEntity.getSchoolRoom().getStudents());
+    	
+    	/** Carries all assignmentGroups in the selected assignment. */
+    	List<AssignmentGroup> grupos = new ArrayList<AssignmentGroup>(assignmentEntity.getAssignmentGroups());
+    	
+    	/** Remove from the list the students who are already in any assignmentGroup. */
+    	for(AssignmentGroup item : grupos){
+    		List<Student> auxStudents = new ArrayList<Student>(item.getStudents());
+    		
+    		for(Student studentGroup : auxStudents){
+        		sourceList.remove(studentGroup);
+        	}
+    	}
+    	
+    	/** Loads the data on the page component. */
+    	students.setSource(sourceList);
+	}
+	
+	/** Validates rules to delete the entity. */
+	@Override
+	public String delete() {
+		return super.delete();
 	}
 	
 	/** Filters used in the class. */
 	@Override
 	protected void initFilters() {
-		addFilter(new LikeFilter(	"manageAssignmentGroups.filter.byNumber", 
-									"number", getI18nMessage("msgs", "manageAssignmentGroups.form.number")));		
+		addFilter(new LikeFilter(	"manageAssignmentGroups.filter.byPeriod", "assignment.schoolRoom.period.year", 
+									getI18nMessage("msgs", "manageAssignmentGroups.filter.period.year")));
+		addFilter(new LikeFilter(	"manageAssignmentGroups.filter.byProfessor", "assignment.schoolRoom.professor.name", 
+									getI18nMessage("msgs", "manageAssignmentGroups.filter.professor.name")));
+		addFilter(new LikeFilter(	"manageAssignmentGroups.filter.byCourse", "assignment.schoolRoom.course.name",
+									getI18nMessage("msgs", "manageAssignmentGroups.filter.course.name")));
+		addFilter(new LikeFilter(	"manageAssignmentGroups.filter.bySchoolRoom", "assignment.schoolRoom.discipline.name",
+									getI18nMessage("msgs", "manageAssignmentGroups.filter.schoolRoom.name")));
+		addFilter(new LikeFilter(	"manageAssignmentGroups.filter.bySubject", "assignment.subject",
+									getI18nMessage("msgs", "manageAssignmentGroups.filter.assignment.subject")));
+		addFilter(new LikeFilter(	"manageAssignmentGroups.filter.byNumber", "number", 
+									getI18nMessage("msgs", "manageAssignmentGroups.form.number")));
 	}
 }

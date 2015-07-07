@@ -53,7 +53,7 @@
 									<f:selectItem itemLabel="" itemValue="" />
 									<f:selectItems 	value ="#{managePeriodsController.periods}" var="period" 
 													itemLabel="#{period.toString()}" itemValue ="#{period}"/>
-									<p:ajax event="change" update="schoolRoomField"
+									<p:ajax event="change" update="schoolRoomField assignmentField studentsField"
 											listener="#{manageAssignmentGroupsController.loadSchoolRooms}"  />								
 								</p:selectOneMenu>		
 							</ui:decorate>
@@ -75,7 +75,7 @@
 										value ="#{manageAssignmentGroupsController.schoolRooms}" var="schoolRoom" 
 										itemLabel="#{schoolRoom.professor} -> #{schoolRoom.course} -> #{schoolRoom.toString()}" 
 										itemValue ="#{schoolRoom}"/>
-									<p:ajax event="change" update="assignmentField"
+									<p:ajax event="change" update="assignmentField studentsField"
 											listener="#{manageAssignmentGroupsController.loadAssignments}"  />						
 								</p:selectOneMenu>
 	                        </ui:decorate>
@@ -90,12 +90,14 @@
 	                            <p:selectOneMenu 	
 	                            	id="assignment" required="true"
 	                            	value="#{manageAssignmentGroupsController.assignmentField}"
-	                            	converter="#{assignmentController.assignmentConverter}" 
+	                            	converter="#{assignmentController.assignmentConverter}"
 	                            	disabled="#{(manageAssignmentGroupsController.readOnly) or
 												(manageAssignmentGroupsController.selectedEntity.id != null)}">
 									<f:selectItem 	itemLabel="" itemValue="" />
 									<f:selectItems 	value="#{manageAssignmentGroupsController.assignments}" var="assignment" 
-													itemLabel="#{assignment.toString()}" itemValue="#{assignment}" />
+													itemLabel="#{assignment.number} - #{assignment.toString()}" itemValue="#{assignment}" />
+									<p:ajax event="change" update="studentsField"
+											listener="#{manageAssignmentGroupsController.loadStudents}"  />
 								</p:selectOneMenu>
 	                        </ui:decorate>
 	                    </h:panelGroup><br />
@@ -109,18 +111,28 @@
 	                            </ui:define>
 	                            <p:inputMask 	id="number" value="#{manageAssignmentGroupsController.selectedEntity.number}" 
 	                            				maxlength="2" required="true" mask="99" size="1"
-	                            				disabled="#{manageAssignmentGroupsController.readOnly}">	                                
+	                            				disabled="#{(manageAssignmentGroupsController.readOnly) or
+															(manageAssignmentGroupsController.selectedEntity.id != null)}">	                                
 	                            </p:inputMask>
 	                        </ui:decorate>
-	                    </h:panelGroup><br /> 
+	                    </h:panelGroup><br />
 	                    
-                        <p:pickList id="students" value="#{manageAssignmentGroupsController.students}" var="student" 
-                        			itemLabel="#{student.toString()}" itemValue="#{student}" filterMatchMode="contains"
-                        			showSourceFilter="true" showTargetFilter="true" 
-                        			disabled="#{manageAssignmentGroupsController.readOnly}">                        			
-                        	<f:facet name="sourceCaption">#{msgs['manageAssignmentGroups.form.students']}</f:facet>
-   							<f:facet name="targetCaption">#{msgs['manageAssignmentGroups.form.studentsGroup']}</f:facet>
-                        </p:pickList><br />
+	                    <h:panelGroup id="studentsField">
+	                    	<ui:decorate template="/resources/formfield.xhtml">
+	                    		<ui:param name="fieldName" value="form:students" />
+	                    		<ui:define name="label">
+	                            	<h:outputText value="#{msgs['manageAssignmentGroups.form.students']}" />
+	                            </ui:define>
+		                        <p:pickList id="students" value="#{manageAssignmentGroupsController.students}" var="student" 
+		                        			itemLabel="#{student.toString()}" itemValue="#{student}" filterMatchMode="contains"
+		                        			disabled="#{manageAssignmentGroupsController.readOnly}"
+		                        			converter="#{assignmentController.studentConverter}"
+		                        			showSourceFilter="true" showTargetFilter="true">                        			
+		                        	<f:facet name="sourceCaption">#{msgs['manageAssignmentGroups.form.studentsAvailable']}</f:facet>
+		   							<f:facet name="targetCaption">#{msgs['manageAssignmentGroups.form.studentsGroup']}</f:facet>
+		                        </p:pickList>
+	                        </ui:decorate>
+                        </h:panelGroup><br />
 	                    
 	                    <ui:decorate template="/resources/formbutton.xhtml">
 	                        <h:panelGroup rendered="#{! manageAssignmentGroupsController.readOnly}">

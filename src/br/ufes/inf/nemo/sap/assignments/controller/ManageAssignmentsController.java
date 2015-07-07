@@ -1,10 +1,10 @@
 package br.ufes.inf.nemo.sap.assignments.controller;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Named;
@@ -35,10 +35,13 @@ public class ManageAssignmentsController extends CrudController<Assignment> {
 	@EJB 
 	private ManageAssignmentsService manageAssignmentsService;
 	
+	/** Controller with SAP utilities. */
+	SAPUtilsController sapUtilsController = new SAPUtilsController();
+	
 	/** The "Manage SchoolRooms" service. */
 	@EJB
 	private ManageSchoolRoomsService manageSchoolRoomsService;
-	
+		
 	/** Getter class service. */
 	@Override
 	protected CrudService<Assignment> getCrudService() {		
@@ -60,6 +63,7 @@ public class ManageAssignmentsController extends CrudController<Assignment> {
 		if(schoolRooms != null) {
 			schoolRooms.clear();
 		}
+		
 		return new Assignment();
 	}
 	
@@ -146,6 +150,20 @@ public class ManageAssignmentsController extends CrudController<Assignment> {
 	    	schoolRooms = manageSchoolRoomsService.getSchoolRooms(periodEntity, professor);
 	    }
 	}
+	
+	/** Validates rules to delete the entity. */
+	@Override
+	public String delete() {
+		String errorMessageKey = manageAssignmentsService.validateExclusion(selectedEntity);		
+		
+		if(errorMessageKey.equals("")) {
+			return super.delete();
+		}
+		else {
+			sapUtilsController.showGlobalMessage(FacesMessage.SEVERITY_FATAL, errorMessageKey);
+			return "";
+		}
+	}
 
 	/** Filters used in the class. */
 	@Override
@@ -158,7 +176,9 @@ public class ManageAssignmentsController extends CrudController<Assignment> {
 									getI18nMessage("msgs", "manageAssignments.filter.course.name")));
 		addFilter(new LikeFilter(	"manageAssignments.filter.bySchoolRoom", "schoolRoom.discipline.name",
 				 					getI18nMessage("msgs", "manageAssignments.filter.schoolRoom.name")));
+		addFilter(new LikeFilter(	"manageAssignments.filter.byNumber", "number",
+				 					getI18nMessage("msgs", "manageAssignments.form.number")));
 		addFilter(new LikeFilter(	"manageAssignments.filter.bySubject", "subject",
-									 getI18nMessage("msgs", "manageAssignments.form.subject")));	
+									getI18nMessage("msgs", "manageAssignments.form.subject")));
 	}
 }

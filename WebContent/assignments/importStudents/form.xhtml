@@ -1,0 +1,94 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/resources/decorator/#{sapInfo.decorator}/decorator.xhtml">
+
+    <ui:define name="title">
+        <h:outputText 	value="#{msgs['importStudents.title']}" />
+    </ui:define>
+
+    <ui:define name="contents">
+        <h1>
+            <h:outputText 	value="#{msgs['importStudents.title']}" />
+        </h1><br />
+
+        <div class="crud">
+            <ui:decorate template="/resources/form.xhtml">
+                <h:form id="form">
+                	<p:panel id="panel" header="#{msgs['crud.text.informationData']}"><br />
+	                	<p:focus context="panel"/>
+	                    <h:panelGroup id="periodField">
+								<ui:decorate template="/resources/formfield.xhtml">
+									<ui:param name="fieldName" value="form:period" />
+									<ui:define name="label">
+										<h:outputText value="#{msgs['importStudents.form.period']}" />
+									</ui:define>
+									<p:selectOneMenu 	id="period" required="true"
+														value="#{importStudentsController.periodField}" 
+														converter="#{assignmentController.periodConverter}">
+										<f:selectItem itemLabel="" itemValue="" />
+										<f:selectItems 	value ="#{managePeriodsController.periods}" var="period" 
+														itemLabel="#{period.toString()}" itemValue ="#{period}"/>
+										<p:ajax event="change" update="schoolRoomField"
+												listener="#{importStudentsController.loadSchoolRooms}"  />										
+									</p:selectOneMenu>		
+								</ui:decorate>
+							</h:panelGroup><br />
+		                	
+		                   	<h:panelGroup id="schoolRoomField">
+		                        <ui:decorate template="/resources/formfield.xhtml">
+		                            <ui:param name="fieldName" value="form:schoolRoom" />                            
+		                            <ui:define name="label">
+		                            	<h:outputText value="#{msgs['importStudents.form.schoolRoom']}" />
+		                            </ui:define>                            
+		                            <p:selectOneMenu 	id="schoolRoom" required="true" 
+		                            					value="#{importStudentsController.schoolRoomField}"
+		                            					converter="#{assignmentController.schoolRoomConverter}">
+										<f:selectItem itemLabel="" itemValue="" />
+										<f:selectItems 	
+												value ="#{importStudentsController.schoolRooms}" var="schoolRoom" 
+												itemLabel="#{schoolRoom.professor} -> #{schoolRoom.course} -> #{schoolRoom.toString()}" 
+												itemValue ="#{schoolRoom}"/>
+									</p:selectOneMenu>
+		                        </ui:decorate>
+		                    </h:panelGroup><br />
+	
+	                    <ui:decorate template="/resources/formbutton.xhtml">
+	                        <h:panelGroup>                            
+	                            <p:commandButton 	action="#{importStudentsController.save}" 
+	                            					value="#{msgs['crud.button.importArchive']}" 
+	                            					icon="ui-icon-transferthick-e-w" update="@all" />                            
+	                        </h:panelGroup>
+	                    </ui:decorate><br />
+	                    
+	                    <p:panel 	id="subPanel" header="#{msgs['importStudents.text.resultImports.title']}"
+	                    			rendered="#{importStudentsController.listStudentsResultImport != null}"><br />		                    
+		                    <p:dataTable 	var="item" value="#{importStudentsController.listStudentsResultImport}">
+							    <p:column headerText="#{msgs['importStudents.form.title.enrollment']}" style="text-align: center;">
+							        <h:outputText value="#{item.student.enrollment}" />
+							    </p:column>
+							    
+							    <p:column headerText="#{msgs['importStudents.form.title.name']}" style="text-align: center;">
+							        <h:outputText value="#{item.student.name}" />
+							    </p:column>
+							    
+							    <p:column headerText="#{msgs['importStudents.form.title.result']}" style="text-align: center;">
+							        <h:outputText value="#{msgs['importStudents.text.resultImports.type' += item.typeResult]}" />
+							    </p:column>
+							</p:dataTable>
+		                </p:panel><br />
+	                    
+	                    <div align="center">
+	                		<p:commandButton 	action="#{sessionController.returnToIndexPage}" 
+	                							value="#{msgs['crud.button.backHome']}" 
+	                							immediate="true" icon="ui-icon-home" />
+	                	</div>
+	            	</p:panel>
+                </h:form>
+            </ui:decorate>
+        </div>
+    </ui:define>
+</ui:composition>

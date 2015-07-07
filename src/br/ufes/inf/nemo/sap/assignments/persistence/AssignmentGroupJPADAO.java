@@ -67,4 +67,19 @@ public class AssignmentGroupJPADAO extends BaseJPADAO<AssignmentGroup> implement
 		AssignmentGroup result = executeSingleResultQuery(cq, assignment, number);
 		return result;
 	}
+	
+	/** Retrieves the list of assignment group that has the exact assignment specified in the parameter. */
+	@Override
+	public List<AssignmentGroup> retrieveByAssignment(Assignment assignment) 
+				throws 	PersistentObjectNotFoundException, MultiplePersistentObjectsFoundException {
+		/** Constructs the query over the AssignmentGroup class. */
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<AssignmentGroup> cq = cb.createQuery(AssignmentGroup.class);
+		Root<AssignmentGroup> root = cq.from(AssignmentGroup.class);
+
+		/** Filters the query with the assignment and number. */
+		cq.where(cb.equal(root.get(AssignmentGroup_.assignment), assignment));
+		List<AssignmentGroup> result = entityManager.createQuery(cq).getResultList();
+		return result;
+	}
 }

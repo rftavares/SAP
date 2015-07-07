@@ -1,5 +1,6 @@
 package br.ufes.inf.nemo.sap.assignments.application;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.*;
@@ -37,6 +38,10 @@ public class ManageStudentsServiceBean 	extends CrudServiceBean<Student>
 	/** The DAO for Supervision objects. */
 	@EJB
 	private SupervisionDAO supervisionDAO;
+	
+	/** The DAO for SchoolRoom objects. */
+	@EJB
+	private SchoolRoomDAO schoolRoomDAO;
 	
 	/** Getter DAO for Student objects. */
 	@Override
@@ -130,7 +135,7 @@ public class ManageStudentsServiceBean 	extends CrudServiceBean<Student>
 		/** Variable used to store the error message. */
 		String errorMessageKey = "";
 		
-		/** Checks if the student has some supervision. */
+		/** Rule 1: Checks if the student has some supervision. */
 		Supervision supervisionEntity = null;
 		
 		try {
@@ -147,6 +152,19 @@ public class ManageStudentsServiceBean 	extends CrudServiceBean<Student>
 		if(supervisionEntity != null) {
 			errorMessageKey = "manageStudents.list.validationDelete.supervision";
 			return errorMessageKey;
+		}
+		
+		/** Rule 2: Checks if the student has some schoolRoom. */		
+		List<SchoolRoom> schoolRooms = schoolRoomDAO.retrieveAll();		
+		
+		for(SchoolRoom item : schoolRooms){
+			List<Student> listStudents = new ArrayList<Student>(item.getStudents());
+		
+			/** Verifies that occurred some validation error. */
+			if(listStudents.contains(student)){
+				errorMessageKey = "manageStudents.list.validationDelete.schoolRoom";
+				return errorMessageKey;
+			}
 		}
 		
 		return errorMessageKey;

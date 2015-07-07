@@ -48,7 +48,7 @@ public class PeriodJPADAO extends BaseJPADAO<Period> implements PeriodDAO {
 		/** Orders by year and number. */
 		List<Order> orderList = new ArrayList<Order>();
 		orderList.add(cb.desc(root.get(Period_.year)));
-		orderList.add(cb.asc(root.get(Period_.number)));
+		orderList.add(cb.desc(root.get(Period_.number)));
 		return orderList;
 	}
 	

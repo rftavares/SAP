@@ -1,6 +1,8 @@
 package br.ufes.inf.nemo.sap.assignments.controller;
 
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -8,7 +10,10 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.inject.Named;
 
+import org.primefaces.model.DualListModel;
+
 import br.ufes.inf.nemo.sap.assignments.application.ManageSchoolRoomsService;
+import br.ufes.inf.nemo.sap.assignments.application.ManageStudentsService;
 import br.ufes.inf.nemo.sap.assignments.domain.*;
 import br.ufes.inf.nemo.util.ejb3.application.CrudService;
 import br.ufes.inf.nemo.util.ejb3.application.filters.LikeFilter;
@@ -32,6 +37,10 @@ public class ManageSchoolRoomsController extends CrudController<SchoolRoom> {
 	/** The "Manage SchoolRooms" service. */
 	@EJB
 	private ManageSchoolRoomsService manageSchoolRoomsService;
+	
+	/** The "Manage Students" service. */
+	@EJB
+	private ManageStudentsService manageStudentsService;
 
 	/** Controller with SAP utilities. */
 	SAPUtilsController sapUtilsController = new SAPUtilsController();
@@ -47,12 +56,74 @@ public class ManageSchoolRoomsController extends CrudController<SchoolRoom> {
 	    viewPath = "/assignments/manageSchoolRooms/";
 	    bundleName = "msgs";
 	}
+	
+	/** List of students. */
+	private DualListModel<Student> students;
+		
+	/** Getter for list of students. */
+	public DualListModel<Student> getStudents() {		
+		return students;
+	}
+	
+	/** Setter for list of students. */
+	public void setStudents(DualListModel<Student> students) {
+		this.students = students;
+	}
 
 	/** Creates a new entity SchoolRoom. */
 	@Override
 	protected SchoolRoom createNewEntity() {
+		students = new DualListModel<Student>(manageStudentsService.getStudents(), new ArrayList<Student>());
+		
 		return new SchoolRoom();
 	}
+	
+	/** Updates the entity with the value of the selected field on the page. */
+	@Override
+    public String save() {
+		/** List of students in the schoolRoom without the changes made on the page. */
+    	List<Student> studentsSchoolRoom = new ArrayList<Student>(selectedEntity.getStudents());
+    	
+    	String errorMessageKey = "";
+    	
+    	/** Checks if any student was removed from schoolRoom and is in any assignmentGroup. */
+    	for(Student student : studentsSchoolRoom){
+    		if(! students.getTarget().contains(student)) {
+    			errorMessageKey = manageSchoolRoomsService.validateExclusionStudent(student, selectedEntity);
+    			
+    			if(! errorMessageKey.equals("")){
+    				sapUtilsController.showGlobalMessage(FacesMessage.SEVERITY_FATAL, errorMessageKey);
+    				return "";
+    			}
+    		}
+    	}
+    	
+		/** Updates the students in the class schoolRoom. */
+    	selectedEntity.setStudents(new HashSet<Student>(students.getTarget()));
+    	
+    	/** Stores the entity in the database. */
+    	return super.save();
+    }
+	
+	/** Method called when modifying an entity. Loads the page's fields with entity data, if it has been selected. */
+    @Override
+    protected void checkSelectedEntity() {
+    	/** Retrieves the students in the selected schoolRoom. */
+    	List<Student> studentsSchoolRoom = new ArrayList<Student>(selectedEntity.getStudents());
+    	students = new DualListModel<Student>(new ArrayList<Student>(), new ArrayList<Student>());
+    	
+    	/** Carries all students in the selected schoolRoom. */
+    	List<Student> sourceList = manageStudentsService.getStudents();
+    	
+    	/** Remove from the list the students who are already in the schoolRoom. */
+    	for(Student item : studentsSchoolRoom){
+    		sourceList.remove(item);
+    	}
+    	
+    	/** Loads the data on the page component. */
+    	students.setSource(sourceList);
+    	students.setTarget(studentsSchoolRoom);
+    }
 		
 	/** Filters used in the class. */
 	@Override

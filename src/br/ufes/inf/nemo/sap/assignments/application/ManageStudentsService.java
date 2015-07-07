@@ -34,5 +34,5 @@ public interface ManageStudentsService extends CrudService<Student> {
 	 * @return 
 	 * 		A list of all students objects.
 	 ***************************************************************************************************/	
-	List<Student> getStudents();
+	public List<Student> getStudents();
 }

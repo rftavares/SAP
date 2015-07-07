@@ -56,12 +56,12 @@ public class ManageStudentsController extends CrudController<Student> {
 	/** Filters used in the class. */
 	@Override
 	protected void initFilters() {
+		addFilter(new LikeFilter(	"manageStudents.filter.byEnrollment", "enrollment",
+									getI18nMessage("msgs", "manageStudents.form.enrollment")));
 		addFilter(new LikeFilter(	"manageStudents.filter.byName", "name", 
 									getI18nMessage("msgs", "manageStudents.form.name")));
 		addFilter(new LikeFilter(	"manageStudents.filter.byEmail", "email", 
-									getI18nMessage("msgs", "manageStudents.form.email")));
-		addFilter(new LikeFilter(	"manageStudents.filter.byEnrollment", "enrollment", 
-									getI18nMessage("msgs", "manageStudents.form.enrollment")));
+									getI18nMessage("msgs", "manageStudents.form.email")));		
 		addFilter(new LikeFilter(	"manageStudents.filter.byPhone", "phone", 
 									getI18nMessage("msgs", "manageStudents.form.phone")));
 	}

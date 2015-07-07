@@ -7,7 +7,7 @@ import javax.ejb.*;
 import br.ufes.inf.nemo.sap.assignments.domain.*;
 import br.ufes.inf.nemo.sap.assignments.persistence.*;
 import br.ufes.inf.nemo.sap.lab.domain.*;
-import br.ufes.inf.nemo.sap.lab.domain.persistence.SupervisionDAO;
+import br.ufes.inf.nemo.sap.lab.domain.persistence.*;
 import br.ufes.inf.nemo.util.ejb3.application.*;
 import br.ufes.inf.nemo.util.ejb3.persistence.BaseDAO;
 import br.ufes.inf.nemo.util.ejb3.persistence.exceptions.*;
@@ -29,6 +29,10 @@ public class ManageProfessorsServiceBean 	extends CrudServiceBean<Professor>
 	/** Information on the whole application. */
 	@EJB
 	private SAPInformation sapInformation;
+	
+	/** The DAO for ResearchGroup objects. */
+	@EJB
+	private ResearchGroupDAO researchGroupDAO;
 	
 	/** The DAO for Professor objects. */
 	@EJB
@@ -172,7 +176,19 @@ public class ManageProfessorsServiceBean 	extends CrudServiceBean<Professor>
 		}
 		
 		/** Rule 3: Checks if the professor has some researchGroup. */
-		// IMPLEMENTAR DEPOIS DE CONSEGUIR FAZER A ASSOCIAÇÃO PROFESSOR X GRUPO PESQUISA
+		List<ResearchGroup> researchGroups = researchGroupDAO.retrieveAll();
+		
+		/** Checks each researchGroup. */
+		for(ResearchGroup item : researchGroups) {
+			List<Professor> listProfessors = new ArrayList<Professor>(item.getProfessors());
+			
+			/** Checks if the professor is in list. */
+			if(listProfessors.contains(professor)){
+				/** Occurred some validation error. */
+				errorMessageKey = "manageProfessors.list.validationDelete.researchGroup";
+				return errorMessageKey;
+			}
+		}
 		
 		return errorMessageKey;
 	}

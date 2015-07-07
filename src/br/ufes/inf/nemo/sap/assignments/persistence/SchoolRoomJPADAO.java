@@ -48,6 +48,7 @@ public class SchoolRoomJPADAO extends BaseJPADAO<SchoolRoom> implements SchoolRo
 		/** Orders by period, professor, course, discipline and number. */
 		List<Order> orderList = new ArrayList<Order>();		
 		orderList.add(cb.asc(root.get(SchoolRoom_.professor)));
+		orderList.add(cb.desc(root.get(SchoolRoom_.period)));
 		orderList.add(cb.asc(root.get(SchoolRoom_.course)));
 		orderList.add(cb.asc(root.get(SchoolRoom_.discipline)));
 		orderList.add(cb.asc(root.get(SchoolRoom_.number)));

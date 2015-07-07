@@ -27,6 +27,10 @@ public class ManageAssignmentsServiceBean 	extends CrudServiceBean<Assignment>
 	/** The DAO for Assignment objects. */
 	@EJB
 	private AssignmentDAO assignmentDAO;
+	
+	/** The DAO for AssignmentGroup objects. */
+	@EJB
+	private AssignmentGroupDAO assignmentGroupDAO;
 
 	/** Getter DAO for Assignment objects. */
 	@Override
@@ -85,6 +89,29 @@ public class ManageAssignmentsServiceBean 	extends CrudServiceBean<Assignment>
 				throw crudException;
 			}
 		}
+	}
+	
+	/** Validates business rules to delete the entity. */
+	public String validateExclusion(Assignment assignment) {		
+		/** Variable used to store the error message. */
+		String errorMessageKey = "";
+		
+		/** Rule 1: Checks if the assignment has some assignmentGroup. */
+		List<AssignmentGroup> assignmentGroups = null;
+		
+		try {
+			assignmentGroups = assignmentGroupDAO.retrieveByAssignment(assignment);
+		}	
+		catch (PersistentObjectNotFoundException e) {}
+		catch (MultiplePersistentObjectsFoundException e) {}		
+		
+		/** Verifies that occurred some validation error. */
+		if(assignmentGroups.size() > 0) {
+			errorMessageKey = "manageAssignments.list.validationDelete.assignmentGroup";
+			return errorMessageKey;
+		}
+		
+		return errorMessageKey;
 	}
 	
 	/** Method used to return a list of all assignments. */

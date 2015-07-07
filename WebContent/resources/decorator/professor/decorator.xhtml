@@ -31,8 +31,8 @@
 								url="/assignments/manageDisciplines/list.faces" />
 					<p:menuitem value="#{msgs['menu.schoolroom.manageStudents.text']}" icon="ui-icon-document" 
 								url="/assignments/manageStudents/list.faces" />
-					<p:menuitem value="#{msgs['menu.schoolroom.associateStudents.text']}" icon="ui-icon-link" 
-								url="/assignments/associateStudents/form.faces" />
+					<p:menuitem value="#{msgs['menu.schoolroom.importStudents.text']}" icon="ui-icon-link" 
+								url="/assignments/importStudents/form.faces" />
 				</p:submenu>
 				<p:submenu label="#{msgs['menu.assignment.text']}" icon="ui-icon-suitcase">
 					<p:menuitem value="#{msgs['menu.assignment.manageAssignments.text']}" icon="ui-icon-document" 
@@ -44,9 +44,11 @@
 					<p:menuitem value="#{msgs['menu.researchGroup.manageSupervisions.text']}" icon="ui-icon-document" 
 								url="/labs/manageSupervisions/list.faces" />
 				</p:submenu>
-											
-				<p:submenu label="#{msgs['menu.settings']}" icon="ui-icon-gear">
-					<p:menuitem value="#{msgs['menu.settings.changeData']}" icon="ui-icon-pencil" url="/login/formProfessor.faces" />
+				<p:menuitem value="#{msgs['menu.consultArticles.text']}" icon="ui-icon-search" url="/indexProfessor.faces" />
+				<p:menuitem value="#{msgs['menu.publishDataRDF.text']}" icon="ui-icon-extlink" url="/data/ResearchGroupsRDF" />
+				<p:submenu label="#{msgs['menu.settings.text']}" icon="ui-icon-gear">
+					<p:menuitem value="#{msgs['menu.settings.changeData.text']}" 
+								icon="ui-icon-pencil" url="/login/formProfessor.faces" />
 				</p:submenu>
 								
 				<f:facet name="options">

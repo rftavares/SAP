@@ -84,16 +84,16 @@
 				                        msgs['manageStudents.text.noEntitiesFiltered'] : 
 				                        msgs['manageStudents.text.noEntities']}">
 
+                        <p:column headerText="#{msgs['manageStudents.form.enrollment']}" style="text-align: center;">
+                            <h:outputText value="#{entity.enrollment}" />
+                        </p:column>
+                        
                         <p:column headerText="#{msgs['manageStudents.form.name']}" style="text-align: center;">                        
                             <h:outputText value="#{entity.name}" />
                         </p:column>
                         
                         <p:column headerText="#{msgs['manageStudents.form.email']}" style="text-align: center;">
                             <h:outputText value="#{entity.email}" />
-                        </p:column>
-                        
-                        <p:column headerText="#{msgs['manageStudents.form.enrollment']}" style="text-align: center;">
-                            <h:outputText value="#{entity.enrollment}" />
                         </p:column>
                         
                         <p:column headerText="#{msgs['manageStudents.form.phone']}" style="text-align: center;">

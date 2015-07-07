@@ -47,8 +47,9 @@ public class Assignment extends PersistentObjectSupport implements Comparable<As
 	@Basic
 	private Float valueDiscountDelay;
 	
-	/** Groups related to the assignment. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "assignment")
+	/** Groups related to the assignment. */	
+	//@OneToMany(cascade = CascadeType.ALL, mappedBy = "assignment", fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.EAGER)
 	private Set<AssignmentGroup> assignmentGroups;
 	
 	/** SchoolRoom associated with the Assignment. */

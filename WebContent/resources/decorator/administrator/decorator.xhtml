@@ -23,7 +23,7 @@
 
 		<h:form>			
 			<p:menubar>				
-				<p:menuitem value="#{msgs['menu.home.text']}" icon="ui-icon-home" url="/indexProfessor.faces" />				
+				<p:menuitem value="#{msgs['menu.home.text']}" icon="ui-icon-home" url="/indexProfessor.faces" />		
 				<p:submenu label="#{msgs['menu.schoolroom.text']}" icon="ui-icon-note">
 					<p:menuitem value="#{msgs['menu.schoolroom.manageSchoolRooms.text']}" icon="ui-icon-document" 
 								url="/assignments/manageSchoolRooms/list.faces" />
@@ -31,8 +31,8 @@
 								url="/assignments/manageDisciplines/list.faces" />
 					<p:menuitem value="#{msgs['menu.schoolroom.manageStudents.text']}" icon="ui-icon-document" 
 								url="/assignments/manageStudents/list.faces" />
-					<p:menuitem value="#{msgs['menu.schoolroom.associateStudents.text']}" icon="ui-icon-link" 
-								url="/assignments/associateStudents/form.faces" />
+					<p:menuitem value="#{msgs['menu.schoolroom.importStudents.text']}" icon="ui-icon-link" 
+								url="/assignments/importStudents/form.faces" />
 					<p:menuitem value="#{msgs['menu.schoolroom.managePeriods.text']}" icon="ui-icon-document" 
 								url="/assignments/managePeriods/list.faces" />
 					<p:menuitem value="#{msgs['menu.schoolroom.manageCourses.text']}" icon="ui-icon-document" 
@@ -49,15 +49,17 @@
 								url="/labs/manageResearchGroups/list.faces" />
 					<p:menuitem value="#{msgs['menu.researchGroup.manageProfessors.text']}" icon="ui-icon-document" 
 								url="/assignments/manageProfessors/list.faces" />
-					<p:menuitem value="#{msgs['menu.researchGroup.associateProfessors.text']}" icon="ui-icon-link" 
-								url="/labs/associateProfessors/list.faces" /> 
 					<p:menuitem value="#{msgs['menu.researchGroup.manageSupervisions.text']}" icon="ui-icon-document" 
 								url="/labs/manageSupervisions/list.faces" />
+				</p:submenu>				
+				<p:menuitem value="#{msgs['menu.consultArticles.text']}" icon="ui-icon-search" 
+							url="/assignments/consultArticles/form.faces" />
+				<p:menuitem value="#{msgs['menu.publishDataRDF.text']}" icon="ui-icon-extlink" url="/data/ResearchGroupsRDF" />
+				<p:submenu label="#{msgs['menu.settings.text']}" icon="ui-icon-gear">
+					<p:menuitem value="#{msgs['menu.settings.changeData.text']}" 
+								icon="ui-icon-pencil" url="/login/formProfessor.faces" />
 				</p:submenu>
 				
-				<p:submenu label="Configurações" icon="ui-icon-gear">
-					<p:menuitem value="Alterar Dados" icon="ui-icon-pencil" url="/login/formProfessor.faces" />
-				</p:submenu>
 					
 				<f:facet name="options">
 					<p:outputLabel 	value="#{msgs['menu.user.text']} #{sessionController.currentProfessor.name}" 
