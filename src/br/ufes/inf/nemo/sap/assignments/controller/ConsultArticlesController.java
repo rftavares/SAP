@@ -56,21 +56,18 @@ public class ConsultArticlesController extends JSFController {
 		//String name = this.getName();
 		String title = "";
 		String service = "http://dblp.rkbexplorer.com/sparql";
-		String query = "PREFIX akt:  <http://www.aktors.org/ontology/portal#> "
-		+"PREFIX akt:  <http://www.aktors.org/ontology/portal#> "+
+		String query = "PREFIX akt:  <http://www.aktors.org/ontology/portal#> "+
+		"PREFIX akt:  <http://www.aktors.org/ontology/portal#> "+
 				" SELECT DISTINCT ?name ?title "+
 		" WHERE "+
 				" { "+
-		" ?auth akt:full-name "+ nameAuthorField +
-		" . "+
-		" ?pub a akt:Publication-Reference ;"+
-		" akt:has-title ?title ;"+
-		" akt:has-author ?auth ."+
-		" } ";
+		" ?auth akt:full-name "+ "\""+nameAuthorField+"\"" +" . "+
+				" ?pub a akt:Publication-Reference ;"+
+				" akt:has-title ?title ;"+
+				" akt:has-author ?auth ."+
+				" } ";
 		QueryExecution queryExecution = QueryExecutionFactory.sparqlService(service, query); 
 		try {
-		 if(queryExecution.execAsk()){
-		     //UP
 		     ResultSet results = queryExecution.execSelect();
 		     while (results.hasNext()){
 		         QuerySolution querySolution = results.nextSolution();
@@ -81,7 +78,6 @@ public class ConsultArticlesController extends JSFController {
 		         //add titulo a lista tituloPublicacao
 		         this.tituloPublicacao.add(title);
 		   }
-		}
 		  } catch(QueryExceptionHTTP e) {
 			System.out.println(service + " is DOWN");
 		  } finally { queryExecution.close(); }
